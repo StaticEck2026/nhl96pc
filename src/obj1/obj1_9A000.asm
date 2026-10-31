@@ -15,7 +15,9 @@ sub_AA62C:							; (routine on the stack): adds it to an 8-entry exit list
 sub_AA664:							; (routine on the stack): takes it off the exit list
 	incbin	"Extracted/segments/obj1_9A000.bin", 0x664, 0x324
 sub_AA988:							; (sprite on the stack): ShowWaitSprite's first call
-	incbin	"Extracted/segments/obj1_9A000.bin", 0x988, 0x104
+	incbin	"Extracted/segments/obj1_9A000.bin", 0x988, 0xB8
+sub_AAA40:							; (shape, x, y on the stack): the ball and the banner shapes go through it
+	incbin	"Extracted/segments/obj1_9A000.bin", 0xA40, 0x4C
 sub_AAA8C:							; (shape on the stack): its second
 	incbin	"Extracted/segments/obj1_9A000.bin", 0xA8C, 0xB4
 sub_AAB40:							; (bitmap, 0, 0 on the stack): DrawTeamStats calls it first

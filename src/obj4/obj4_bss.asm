@@ -103,13 +103,60 @@ chathead:							; LinkChat: chatbuf entry written next (word)
 	resw	1
 chattail:							; LinkChat: chatbuf entry sent next (word)
 	resw	1
-	resb	0xE38
+unk_151AE4:							; ThreeStarsTick: the sparkle's x
+	resd	1
+unk_151AE8:							; ThreeStarsTick: the sparkle's y
+	resd	1
+unk_151AEC:							; ThreeStarsScreen: star shapes, ThreeStarsTick shows them 8 a row
+	resb	0x1C
+unk_151B08:							; ThreeStarsScreen: sprites, a dword per star
+	resb	0x44
+unk_151B4C:							; ThreeStarsScreen: a bitmap (sprite at +2Ch); shapes follow it
+	resd	1
+unk_151B50:							; shapes ThreeStarsTick indexes by its streak step
+	resb	0x14
+unk_151B64:							; ThreeStarsTick: the sparkle sprite
+	resd	1
+unk_151B68:							; ThreeStarsTick: the streak sprite, or 0
+	resd	1
+unk_151B6C:							; ThreeStarsScreen: the STRK shape
+	resd	1
+unk_151B70:							; ThreeStarsScreen: a sprite made from STRK
+	resd	1
+unk_151B74:							; ThreeStarsTick: sparkle shape of step 4
+	resd	1
+unk_151B78:							; ThreeStarsTick: sparkle shape of steps 3 and 5
+	resd	1
+unk_151B7C:							; ThreeStarsTick: sparkle shape of steps 2 and 6
+	resd	1
+	resb	0xD9C
 linkpollfn:							; routine LinkSync calls while it waits (SetLinkPollFn), or 0
 	resd	1
-	resb	0x12DB8
+	resb	0x638
+unk_152F58:							; GameStatsScreen: a shape bank
+	resd	1
+	resb	0x4257
+unk_1571B3:							; ThreeStarsScreen: player records, 4B4h a team and 2Bh a player
+	resb	1
+	resb	0xE524
 teamstats:							; the two teams' game stats, teamstats_size bytes each (DrawTeamStats)
 	resb	2 * teamstats_size
-	resb	0x1646A
+	resb	0x11274
+startm:								; the three stars: team of star n (word, every 4 bytes; 3 entries)
+	resw	1
+starpl:								; the three stars: player of star n (word, every 4 bytes)
+	resw	1
+	resb	8
+	resb	0x50B0
+unk_17BC74:							; ThreeStarsScreen: given to the routine after the background
+	resd	1
+unk_17BC78:							; given to the same routine after the chat and at the end
+	resd	1
+	resb	0x66
+unk_17BCE2:							; the Chat button (66h bytes, copied into the menus)
+	resb	0x66
+unk_17BD48:							; the Done button (66h bytes, copied into the menus)
+	resb	0x66
 byte_17BDAE:						; a screen buffer given to the link messages
 	resb	0xBF2
 dword_17C9A0:						; game setup: pointer to the controller devices and teams
@@ -145,3 +192,6 @@ byte_17CA75:						; B9h bytes the calling machine sends when connecting
 	resb	0x7FD
 byte_17D272:						; where those B9h bytes are sent from and received into
 	resb	0xB9
+	resb	0x4DC6
+unk_1820F1:							; ThreeStarsMenu clears it before the second choice
+	resb	1

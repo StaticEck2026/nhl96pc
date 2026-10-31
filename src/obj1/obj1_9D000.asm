@@ -5,7 +5,9 @@ sub_AD35C:							; (width, height, 0 on the stack): returns LinkChat's window
 sub_AD620:							; LinkChat calls it with the SHAD and PAL blocks
 	incbin	"Extracted/segments/obj1_9D000.bin", 0x620, 0x60
 sub_AD680:							; LinkChat calls it with a text and a position
-	incbin	"Extracted/segments/obj1_9D000.bin", 0x680, 0x400
+	incbin	"Extracted/segments/obj1_9D000.bin", 0x680, 0x3D0
+sub_ADA50:							; called before the backgrounds are drawn
+	incbin	"Extracted/segments/obj1_9D000.bin", 0xA50, 0x30
 sub_ADA80:							; LinkChat calls it with the window's corners
 	incbin	"Extracted/segments/obj1_9D000.bin", 0xA80, 0x134
 sub_ADBB4:							; (text on the stack): LinkChat compares the result with the window width

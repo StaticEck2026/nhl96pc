@@ -6,8 +6,9 @@
   their own). Onboarding: StaticEck.
 - Source: the LE header fields and object table (`src/le/le_header.asm`) and obj1 from 0x10000 to 0x144BD: the controller
   code and GrLink (obj1_00000), the GrIP glue and game port sticks (obj1_01000), joystick detection and the modem link
-  (obj1_02000), the link close, pads exchange and chat window (obj1_03000), a data table and DrawTeamStats (obj1_04000).
-  Everything else is incbin, with labels split in where converted code points. Next: obj1_05000 (from 0x15344).
+  (obj1_02000), the link close, pads exchange and chat window (obj1_03000), a data table and DrawTeamStats (obj1_04000),
+  the team stats and three stars screens (obj1_05000). Everything else is incbin, with labels split in where converted
+  code points. Next: obj1_06000 (from 0x168DA).
 - Record equates shared by pages: `src/inc/input.inc` (ctlrecs ctl_, joyslots js_).
 - Object 4 BSS labels: `src/obj4/obj4_bss.asm` (no bytes, `absolute` after the last obj4 page).
 
@@ -40,6 +41,9 @@
 - obj1_04000: the team stats rows are texts 20Ch-21Ah from the language file, so the stats are described by their
   teamstats offsets, not named; teamstats' record start and size (136h) come from the two bases this code uses. The data
   table at 0x144BD (word_144BD .. dword_144ED) is read by the next module and keeps auto names.
+- obj1_05000: ThreeStarsScreen's first button (result 2: ThreeStarsMenu waits on sub_8C51B until it returns A410h) is
+  not identified, nor the third animation of ThreeStarsTick. The screen and shape routines it calls (sub_62AF7,
+  sub_64F59 the menu runner, sub_AAA40, sub_B0494 ...) keep auto names and comments that only say how they are called.
 - Key bindings 0 and 1 (pad bits 0-1) and the team extra keys (bits 10-13, 18 / 14-17, 19): what they do in the game.
 - GrLink, the cont1team / ctl_type meanings and the home / away reading of the setup flag are medium confidence (see name_map).
 

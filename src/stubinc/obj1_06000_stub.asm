@@ -2,5 +2,5 @@
 ;	for checking against the EXE (tools/verify_segment.py obj1_06000).
 %include "inc/le_objects.inc"
 	bits	32
-	org	0x16000
+	org	0x168DA
 %include "obj1/obj1_06000.asm"

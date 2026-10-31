@@ -904,6 +904,7 @@ DrawTeamStats:						; eax the page
 	call	sub_ADBEC
 	add	esp,4
 	leave
+.tail:								; shared tail: GameStatsScreen ends here too
 	pop	edi
 	pop	esi
 	pop	edx

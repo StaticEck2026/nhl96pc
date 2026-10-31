@@ -109,8 +109,48 @@ statsteam1x:						; x of the first team's values
 statsteam2x:						; x of the second team's values
 	incbin	"Extracted/segments/obj4_04000.bin", 0xDD6, 0x2
 statsrowtop:						; DrawTeamStats: the row tops, a word per row; entry 2 is the first row's
-	incbin	"Extracted/segments/obj4_04000.bin", 0xDD8, 0xE
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDD8, 0xC
+unk_114DE4:							; GameStatsScreen: added to the panel top
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDE4, 0x2
 statsfirstrow:						; DrawTeamStats: the first row shown
-	incbin	"Extracted/segments/obj4_04000.bin", 0xDE6, 0x122
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDE6, 0x2
+unk_114DE8:							; ThreeStarsTick: three sparkle areas, 40h apart: x from
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDE8, 0x8
+unk_114DF0:							; x to
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDF0, 0x4
+unk_114DF4:							; y from
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDF4, 0x8
+unk_114DFC:							; y to
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDFC, 0xAC
+unk_114EA8:							; ThreeStarsScreen data
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEA8, 0x4
+unk_114EAC:							; ThreeStarsScreen data
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEAC, 0x4
+unk_114EB0:							; ThreeStarsScreen data
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEB0, 0x4
+unk_114EB4:							; ThreeStarsScreen data
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEB4, 0x1C
+unk_114ED0:							; ThreeStarsScreen data
+	incbin	"Extracted/segments/obj4_04000.bin", 0xED0, 0x4
+unk_114ED4:							; ThreeStarsScreen data
+	incbin	"Extracted/segments/obj4_04000.bin", 0xED4, 0x14
+unk_114EE8:							; ThreeStarsTick: tick for the next sparkle
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEE8, 0x4
+unk_114EEC:							; ThreeStarsTick: tick for the third effect
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEEC, 0x4
+unk_114EF0:							; ThreeStarsTick: tick for the next streak
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEF0, 0x4
+unk_114EF4:							; ThreeStarsTick: tick for its next pass
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEF4, 0x4
+unk_114EF8:							; ThreeStarsTick: the sparkle step, 6 down to 0
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEF8, 0x2
+unk_114EFA:							; ThreeStarsTick: the streak step
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEFA, 0x2
+unk_114EFC:							; ThreeStarsTick: the third effect's step
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEFC, 0x2
+unk_114EFE:							; ThreeStarsTick: wait before the next star frame
+	incbin	"Extracted/segments/obj4_04000.bin", 0xEFE, 0x2
+unk_114F00:							; ThreeStarsTick: the star frame, 0-23
+	incbin	"Extracted/segments/obj4_04000.bin", 0xF00, 0x8
 dword_114F08:						; kept by FlushControllerInput, cleared by SetupControllers
 	incbin	"Extracted/segments/obj4_04000.bin", 0xF08

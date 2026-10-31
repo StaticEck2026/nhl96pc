@@ -31,7 +31,7 @@ Source style (same as the sibling repos):
 
 ## Current segment
 
-obj1_05000 (starts at 0x15344). <- CURRENT
+obj1_06000 (starts at 0x168DA). <- CURRENT
 
 ## Sources
 
@@ -72,6 +72,8 @@ obj1_05000 (starts at 0x15344). <- CURRENT
   shortening also pulls the target 4 bytes closer.
 - `push label-base` with a small value needs `push strict dword`; `[reg*2+label-base]` needs `nosplit` and, with a label,
   an equate for `label-base` (NASM drops nosplit there).
+- A reg,reg instruction in the other opcode direction (for example `sbb eax,edx` as 1Bh C2h; NASM writes 19h D0h) is
+  `db` bytes with the instruction in the comment; check every page with an isolated assemble of the ndisasm text.
 
 ## History
 
@@ -99,6 +101,9 @@ obj1_05000 (starts at 0x15344). <- CURRENT
   game's team stats page; it crosses the page, so obj1_05000 now starts at 0x15344). teamstats in the BSS (two records,
   teamstats_size apart). NASM notes: `push strict dword label-base` keeps the imm32 push; `[nosplit reg*2+label-base]`
   still splits, so the offset is an equate (statsrowtop_off). MATCH.
+- 2026-10-31: obj1_05000 disassembled (0x15344-0x168DA): GameStatsScreen, ThreeStarsTick, ThreeStarsScreen (the three
+  stars cards, startm / starpl from 95PC) and ThreeStarsMenu; two jump tables before their routines, shared tails into
+  DrawTeamStats.tail (a label added in obj1_04000). One `sbb eax,edx` in Watcom's 1Bh form is written as bytes. MATCH.
 
 ## Segment map
 
@@ -113,8 +118,8 @@ obj1_05000 (starts at 0x15344). <- CURRENT
 | obj1_02000 | asm (0x1214A-0x13146: joystick detection, modem game link) | 0x07599E | 4092 |
 | obj1_03000 | asm (0x13146-0x144BD: link close, pads exchange, LinkChat) | 0x07699A | 4983 |
 | obj1_04000 | asm (0x144BD-0x15344: a data table, DrawTeamStats) | 0x077D11 | 3719 |
-| obj1_05000 | incbin <- CURRENT | 0x078B98 | 3260 |
-| obj1_06000 | incbin | 0x079854 | 4096 |
+| obj1_05000 | asm (0x15344-0x168DA: team stats screen, three stars screen) | 0x078B98 | 5526 |
+| obj1_06000 | incbin <- CURRENT | 0x07A12E | 1830 |
 | obj1_07000 | incbin | 0x07A854 | 4096 |
 | obj1_08000 | incbin | 0x07B854 | 4096 |
 | obj1_09000 | incbin | 0x07C854 | 4096 |

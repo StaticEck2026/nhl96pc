@@ -189,3 +189,10 @@ address,name,auto_name,source,confidence,evidence,file
 0011003D,str_fmtslash,unk_11003D,new,high,"""%d/%d""",obj4/obj4_00000.asm
 00110043,str_fmttime,unk_110043,new,high,"""%d:%02d""",obj4/obj4_00000.asm
 0011004B,str_fmtpct,unk_11004B,new,high,"""%d/%d (%d%%)""",obj4/obj4_00000.asm
+00015344,GameStatsScreen,sub_15344,new,medium,"BKGD, BANNER with both teams' %04d shapes, SBACK panel with DrawTeamStats, AR00/AR01 and AR10/AR11 arrows scrolling statsfirstrow 0-10, Done (unk_17BD48) and Chat in a modem game; called by ThreeStarsMenu on choice 1",obj1/obj1_05000.asm
+00015A8E,ThreeStarsTick,sub_15A8E,new,medium,"menu callback passed by ThreeStarsScreen: every 4 ticks steps 24 star frames, random sparkles (rand_, 6 steps, jump table), a streak and a third effect",obj1/obj1_05000.asm
+00015E93,ThreeStarsScreen,sub_15E93,new,medium,"a card per star from startm/starpl (player record, photo ****.FSH or profile.fsh, card, plyr, ""%s %s"", ST%d%d, STR%d, MET%d, STRK), buttons BT0x/BT1x; returns 2 / 1 / 0, button 3 LinkChat in a modem game",obj1/obj1_05000.asm
+00016875,ThreeStarsMenu,sub_16875,new,medium,"repeats ThreeStarsScreen: 1 -> GameStatsScreen, 2 -> waits on sub_8C51B, 0 ends",obj1/obj1_05000.asm
+000B03F8,rand_,sub_B03F8,95PC,high,same bytes as 95PC rand_,obj1/obj1_A0000.asm
+00176BB8,startm,unk_176BB8,95PC,high,"95PC startm: three-stars list, team of star i (word, stride 4, 3 entries); ThreeStarsScreen reads it",obj4/obj4_bss.asm
+00176BBA,starpl,unk_176BBA,95PC,high,"95PC starpl: player of star i (word, stride 4)",obj4/obj4_bss.asm
