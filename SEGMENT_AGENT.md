@@ -31,7 +31,7 @@ Source style (same as the sibling repos):
 
 ## Current segment
 
-obj1_04000 (starts at 0x144BD, with data). <- CURRENT
+obj1_05000 (starts at 0x15344). <- CURRENT
 
 ## Sources
 
@@ -70,6 +70,8 @@ obj1_04000 (starts at 0x144BD, with data). <- CURRENT
   `field-2` (for example `joyslots+js_cx-2`). Record layouts used by more than one page are equates in `src/inc/`.
 - A forward near jump whose target is within 127 bytes once the jump itself is short must keep `near`: NASM's
   shortening also pulls the target 4 bytes closer.
+- `push label-base` with a small value needs `push strict dword`; `[reg*2+label-base]` needs `nosplit` and, with a label,
+  an equate for `label-base` (NASM drops nosplit there).
 
 ## History
 
@@ -93,6 +95,10 @@ obj1_04000 (starts at 0x144BD, with data). <- CURRENT
   starts, so obj1_04000 now starts there). LinkSyncWait, LinkClose, LinkFlushInput, LinkSendPads (both machines' pads
   into the input queue) and the chat window. The link rings got their meanings: linkchatq, linkctlq, linkmyctlq; the
   input queue is inputq. Generator fix: a forward `jcc near` NASM could shorten keeps `near` (the target moves too). MATCH.
+- 2026-10-31: obj1_04000 disassembled (0x144BD-0x15344: the next module's data table as dw/dd, then DrawTeamStats, the
+  game's team stats page; it crosses the page, so obj1_05000 now starts at 0x15344). teamstats in the BSS (two records,
+  teamstats_size apart). NASM notes: `push strict dword label-base` keeps the imm32 push; `[nosplit reg*2+label-base]`
+  still splits, so the offset is an equate (statsrowtop_off). MATCH.
 
 ## Segment map
 
@@ -106,8 +112,8 @@ obj1_04000 (starts at 0x144BD, with data). <- CURRENT
 | obj1_01000 | asm (0x11107-0x1214A: GrIP glue, game port sticks, ReadJoysticks) | 0x074954 | 4163 |
 | obj1_02000 | asm (0x1214A-0x13146: joystick detection, modem game link) | 0x07599E | 4092 |
 | obj1_03000 | asm (0x13146-0x144BD: link close, pads exchange, LinkChat) | 0x07699A | 4983 |
-| obj1_04000 | incbin <- CURRENT | 0x077D11 | 2883 |
-| obj1_05000 | incbin | 0x078854 | 4096 |
+| obj1_04000 | asm (0x144BD-0x15344: a data table, DrawTeamStats) | 0x077D11 | 3719 |
+| obj1_05000 | incbin <- CURRENT | 0x078B98 | 3260 |
 | obj1_06000 | incbin | 0x079854 | 4096 |
 | obj1_07000 | incbin | 0x07A854 | 4096 |
 | obj1_08000 | incbin | 0x07B854 | 4096 |

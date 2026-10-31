@@ -101,6 +101,16 @@ word_114DC0:						; word cleared before each packet is sent or taken
 word_114DC2:						; word table, indexed by a setup word
 	incbin	"Extracted/segments/obj4_04000.bin", 0xDC2, 0x8
 dword_114DCA:						; four bytes the two machines exchange after connecting
-	incbin	"Extracted/segments/obj4_04000.bin", 0xDCA, 0x13E
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDCA, 0x8
+statslabelx:						; DrawTeamStats: x of the stat names
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDD2, 0x2
+statsteam1x:						; x of the first team's values
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDD4, 0x2
+statsteam2x:						; x of the second team's values
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDD6, 0x2
+statsrowtop:						; DrawTeamStats: the row tops, a word per row; entry 2 is the first row's
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDD8, 0xE
+statsfirstrow:						; DrawTeamStats: the first row shown
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDE6, 0x122
 dword_114F08:						; kept by FlushControllerInput, cleared by SetupControllers
 	incbin	"Extracted/segments/obj4_04000.bin", 0xF08

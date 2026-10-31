@@ -175,3 +175,17 @@ address,name,auto_name,source,confidence,evidence,file
 00110023,str_X,unk_110023,new,high,"""X""",obj4/obj4_00000.asm
 00110025,str_SHAD,unk_110025,new,high,"""SHAD""",obj4/obj4_00000.asm
 0011002A,str_PAL,unk_11002A,new,high,"""PAL""",obj4/obj4_00000.asm
+0001456D,DrawTeamStats,sub_1456D,new,medium,"bitmap of the page size (eax +4/+6), rows texts 20Ch-21Ah at statslabelx and teamstats words of both teams (stride 136h) at statsteam1x/2x, from statsfirstrow, formats ""%d"", ""%d.%d"", ""%d/%d"", ""%d:%02d"", ""%d/%d (%d%%)""",obj1/obj1_04000.asm
+000144BD,word_144BD,word_144BD,new,low,data read by the code at 15EA7 (the next module); auto name,obj1/obj1_04000.asm
+001656D8,teamstats,unk_1656D8,new,medium,two records 136h apart with the same word fields; DrawTeamStats shows +0..+2Ah for both; used widely by the engine,obj4/obj4_bss.asm
+00114DD2,statslabelx,word_114DD2,new,medium,DrawTeamStats: edx (x) of the row names,obj4/obj4_04000.asm
+00114DD4,statsteam1x,word_114DD4,new,medium,DrawTeamStats: x of the first team's values,obj4/obj4_04000.asm
+00114DD6,statsteam2x,word_114DD6,new,medium,DrawTeamStats: x of the second team's values,obj4/obj4_04000.asm
+00114DD8,statsrowtop,word_114DD8,new,medium,DrawTeamStats: y = statsrowtop[row - statsfirstrow] - statsrowtop[2] + 1,obj4/obj4_04000.asm
+00114DE6,statsfirstrow,word_114DE6,new,medium,DrawTeamStats: rows before it are not drawn; 0 set by the caller at 15613,obj4/obj4_04000.asm
+00110030,str_fmtd,unk_110030,new,high,"""%d""",obj4/obj4_00000.asm
+00110033,str_fmtdotd,unk_110033,new,high,"""%d.%d""",obj4/obj4_00000.asm
+00110039,str_zero,unk_110039,new,high,"""0.0""",obj4/obj4_00000.asm
+0011003D,str_fmtslash,unk_11003D,new,high,"""%d/%d""",obj4/obj4_00000.asm
+00110043,str_fmttime,unk_110043,new,high,"""%d:%02d""",obj4/obj4_00000.asm
+0011004B,str_fmtpct,unk_11004B,new,high,"""%d/%d (%d%%)""",obj4/obj4_00000.asm

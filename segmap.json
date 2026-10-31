@@ -58,13 +58,13 @@
   {
    "name": "obj1_04000",
    "off": 490769,
-   "size": 2883,
+   "size": 3719,
    "file": "obj1/obj1_04000.asm"
   },
   {
    "name": "obj1_05000",
-   "off": 493652,
-   "size": 4096,
+   "off": 494488,
+   "size": 3260,
    "file": "obj1/obj1_05000.asm"
   },
   {

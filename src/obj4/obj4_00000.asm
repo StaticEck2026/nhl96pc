@@ -17,4 +17,16 @@ str_X:								; "X"
 str_SHAD:							; "SHAD"
 	incbin	"Extracted/segments/obj4_00000.bin", 0x25, 0x5
 str_PAL:							; "PAL"
-	incbin	"Extracted/segments/obj4_00000.bin", 0x2A
+	incbin	"Extracted/segments/obj4_00000.bin", 0x2A, 0x6
+str_fmtd:							; "%d"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x30, 0x3
+str_fmtdotd:						; "%d.%d"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x33, 0x6
+str_zero:							; "0.0"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x39, 0x4
+str_fmtslash:						; "%d/%d"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x3D, 0x6
+str_fmttime:						; "%d:%02d"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x43, 0x8
+str_fmtpct:							; "%d/%d (%d%%)"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x4B

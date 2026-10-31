@@ -11,4 +11,6 @@ sub_ADA80:							; LinkChat calls it with the window's corners
 sub_ADBB4:							; (text on the stack): LinkChat compares the result with the window width
 	incbin	"Extracted/segments/obj1_9D000.bin", 0xBB4, 0x38
 sub_ADBEC:							; LinkChat calls it with a text
-	incbin	"Extracted/segments/obj1_9D000.bin", 0xBEC
+	incbin	"Extracted/segments/obj1_9D000.bin", 0xBEC, 0x2C
+sub_ADC18:							; (buffer, format, values on the stack): formats a text into buffer
+	incbin	"Extracted/segments/obj1_9D000.bin", 0xC18
