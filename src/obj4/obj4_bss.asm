@@ -107,7 +107,7 @@ chattail:							; LinkChat: chatbuf entry sent next (word)
 linkpollfn:							; routine LinkSync calls while it waits (SetLinkPollFn), or 0
 	resd	1
 	resb	0x12DB8
-teamstats:							; the two teams' game stats, teamstats_size bytes each (words read by DrawTeamStats)
+teamstats:							; the two teams' game stats, teamstats_size bytes each (DrawTeamStats)
 	resb	2 * teamstats_size
 	resb	0x1646A
 byte_17BDAE:						; a screen buffer given to the link messages
