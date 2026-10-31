@@ -1,1 +1,56 @@
 address,name,auto_name,source,confidence,evidence,file
+00010000,forever,sub_10000,WATCOM,high,"Watcom cstrt386 BEGTEXT: int 3 then jmp short forever, the trap at the start of code",obj1/obj1_00000.asm
+00010003,___begtext,unk_10003,WATCOM,high,"Watcom cstrt386 ___begtext at offset 3 of BEGTEXT, nop padding; the start-up code at start references it (fixup)",obj1/obj1_00000.asm
+00010010,GetCtlAvailMask,sub_10010,new,high,returns mouse present (bit 0) and joyslotmask bits 0-3 (bits 1-4); SetupControllers stores it in ctlavailmask,obj1/obj1_00000.asm
+00010095,DetectControllers,sub_10095,new,high,clears joyslotmask/mousepresent; MouseInit and a first mouse poll only once (mousechecked); joyslotmask = DetectJoysticks(),obj1/obj1_00000.asm
+000100F2,ReadKeyBinding,sub_100F2,new,high,"(Ctrl, Alt, binding index, bits, &pad): binding entry {needs Ctrl, needs Alt, scan code word} in keybindings; ORs the bits when KeyDown with the modifier held",obj1/obj1_00000.asm
+0001014B,ReadSharedKeys,sub_1014B,new,medium,clears the pad and reads key bindings 0 and 1 into bits 0-1; ReadControllerPads starts every controller pad from this,obj1/obj1_00000.asm
+000101A3,MapPadDirection,sub_101A3,new,medium,"pad bits 2-5 through dirmaptab row (0-7 from sub_619E2); no callers, ReadControllerPads has it inline",obj1/obj1_00000.asm
+000101D9,ReadKeyboardPad,sub_101D9,95PC,high,"same job as 95PC ReadKeyboardPad: keyboard to pad (bindings 2-11 buttons and 8 directions, double tap, team extra keys); ReadControllerPads device 40h",obj1/obj1_00000.asm
+000104B6,ReadKeyboardPadEnter,sub_104B6,new,medium,"ReadKeyboardPad(pad, 1) plus Enter -> pad bit 7; no callers, inline copy in ReadControllerPads",obj1/obj1_00000.asm
+000104DC,ReadMousePad,sub_104DC,95PC,high,"same job as 95PC ReadMousePad: mousepollfn, direction from screen zones of mousex/mousey (640x480 or 320x200), buttons; ReadControllerPads device 2",obj1/obj1_00000.asm
+000106CC,ReadJoyPad,sub_106CC,95PC,high,"same job as 95PC ReadJoyPad: (slot, &pad, team) direction and buttons from the slot byte of joyrawbits, double tap; ReadControllerPads devices 4/8/10h/20h",obj1/obj1_00000.asm
+000108BB,SetupControllers,sub_108BB,95PC,high,"same job as 95PC SetupControllers: controller devices and cont1team (0 none, 1 home, 2 away) from the setup, recentres the mouse, clears the input queue",obj1/obj1_00000.asm
+00010A65,ReleaseControllers,sub_10A65,new,medium,"clears ctlrecs, mouse range back to mousewidth x mouseheight and centred, clears the input queue; called next to SetupControllers",obj1/obj1_00000.asm
+00010AF1,ReadControllerPads,sub_10AF1,new,high,"for each ctlrecs entry of type 1: ReadSharedKeys + device dispatch (2 mouse, 4-20h joystick slots, 40h keyboard), direction map, pad stored in the record",obj1/obj1_00000.asm
+00010C9B,FlushControllerInput,sub_10C9B,new,medium,clears the four ctlrecs pads and the input queue (or calls sub_13338 when word_114CE0 bit 0),obj1/obj1_00000.asm
+00010D17,AnyInputPressed,sub_10D17,95PC,high,"same job as 95PC AnyInputPressed: 1 mouse button, 2 joystick button (joyrawbits 30h per slot), 3 key (GetKey)",obj1/obj1_00000.asm
+00010D66,GrLink,sub_10D66,new,medium,"Gravis GrIP SDK GrLink(image, size): ""DB"" header, nibble-coded offset/size/checksum, DPMI DOS memory and code descriptor, far call with ax 8490h; EXE has GRIP.GLL and Advanced Gravis strings",obj1/obj1_00000.asm
+00011A88,ReadJoysticks,sub_11A88,new,medium,"writes joyrawbits; called before joyrawbits is read (ReadControllerPads, AnyInputPressed)",obj1/obj1_01000.asm
+0001218A,DetectJoysticks,sub_1218A,new,medium,"its result is stored in joyslotmask (DetectControllers), bits 0-3 used as joystick slots",obj1/obj1_02000.asm
+000DF928,MouseSetPos,sub_DF928,95PC,high,"same code as 95PC MouseSetPos: (x, y) stack args -> mousex, mousey",obj1/obj1_CF000.asm
+000DF98F,MouseSetRange,sub_DF98F,new,high,"(xmin, ymin, xmax, ymax) stack args stored as the clamp limits the mouse poll uses; 95PC sub_B2E1B",obj1/obj1_CF000.asm
+000DFA98,MouseInit,sub_DFA98,new,high,"int 33h reset, range and position from mousewidth/mouseheight, installs mousepollfn, returns the mouse state (0 none); 95PC sub_B2F22",obj1/obj1_CF000.asm
+000DFE9C,KeyDown,sub_DFE9C,new,high,(scan code on stack) returns the byte of the keyboard state table; 95PC sub_B2CBE,obj1/obj1_CF000.asm
+000DFEB4,GetTicks,sub_DFEB4,95PC,high,"same code as 95PC GetTicks: mov eax,[tickcount]; ret",obj1/obj1_CF000.asm
+000DFF28,GetKey,sub_DFF28,new,medium,"keyboard handler ah=1 (key waiting?) then ah=0 (read), 0 when none; 95PC sub_B39D0",obj1/obj1_CF000.asm
+00114B40,joyslotmask,word_114B40,new,high,= DetectJoysticks(); bits 0-3 tested by GetCtlAvailMask as joystick slots,obj4/obj4_04000.asm
+00114B42,mousepresent,word_114B42,new,high,set to 1 when MouseInit returns nonzero; GetCtlAvailMask bit 0,obj4/obj4_04000.asm
+00114B44,mousechecked,word_114B44,new,high,"DetectControllers calls MouseInit only while 0, then sets 1",obj4/obj4_04000.asm
+00114B48,ctlavailmask,dword_114B48,95PC,high,"same role as 95PC ctlavailmask (bit 0 mouse, then joysticks): GetCtlAvailMask result, bit 0 tested before mouse calls",obj4/obj4_04000.asm
+00114B5C,homekeytime,dword_114B5C,new,medium,"GetTicks()+18 after the home-team (flag set) bindings 0Ch-0Fh, 14h are read; not read again before",obj4/obj4_04000.asm
+00114B60,awaykeytime,dword_114B60,new,medium,"the same for the away-team bindings 10h-13h, 15h",obj4/obj4_04000.asm
+00114B64,kbdtaptime,dword_114B64,new,high,keyboard double tap: GetTicks()+10 when the direction is let go; same direction before it sets pad bit 20,obj4/obj4_04000.asm
+00114B68,joytaptime,dword_114B68,new,high,"joystick double tap time, dword per slot (+12 ticks)",obj4/obj4_04000.asm
+00114B78,kbdtapstate,dword_114B78,new,high,"keyboard double tap state: 1 direction held, 0 released",obj4/obj4_04000.asm
+00114B7C,joytapstate,dword_114B7C,new,high,"joystick double tap state, dword per slot",obj4/obj4_04000.asm
+00114BA8,keybindtab0,unk_114BA8,new,high,"key binding table (4 bytes per binding), keybindings when byte_17CA21 bit 7 is clear",obj4/obj4_04000.asm
+00114C00,keybindtab1,unk_114C00,new,high,key binding table used when byte_17CA21 bit 7 is set,obj4/obj4_04000.asm
+00114C58,dirmaptab,unk_114C58,new,high,"11 bytes per row, indexed by pad direction (0-10), row from sub_619E2 (0-7)",obj4/obj4_04000.asm
+00114CCF,grlinked,dword_114CCF,new,high,"GrLink returns 0 while set, sets it to 1 after the library link call succeeds; GrUnlink clears it",obj4/obj4_04000.asm
+001178D2,cont1team,word_1178D2,95PC,medium,"same role as 95PC cont1team/cont2team (0 none, 1 home, 2 away), here a word per controller, set by SetupControllers",obj4/obj4_07000.asm
+0011F5A8,mousex,dword_11F5A8,95PC,high,"95PC mousex: MouseSetPos x, compared against the screen zones in ReadMousePad",obj4/obj4_0F000.asm
+0011F5AC,mousey,dword_11F5AC,95PC,high,95PC mousey,obj4/obj4_0F000.asm
+0011F5C0,mousewidth,dword_11F5C0,new,high,MouseSetRange xmax and MouseSetPos x/2 in ReleaseControllers and MouseInit; 95PC dword_D3044,obj4/obj4_0F000.asm
+0011F5C4,mouseheight,dword_11F5C4,new,high,MouseSetRange ymax and MouseSetPos y/2; 95PC dword_D3048,obj4/obj4_0F000.asm
+0011F600,mousepollfn,off_11F600,95PC,high,"95PC mousepollfn: MouseInit stores the poll routine, called before reading mousex/mousey and the buttons",obj4/obj4_0F000.asm
+00151598,joytapdir,dword_151598,new,high,"joystick double tap: last direction, dword per slot",obj4/obj4_bss.asm
+001515A8,curpad,dword_1515A8,new,high,the pad ReadControllerPads builds before storing it in the controller record,obj4/obj4_bss.asm
+001515B0,kbdtapdir,dword_1515B0,new,high,keyboard double tap: last direction,obj4/obj4_bss.asm
+001515B4,ctlrecs,unk_1515B4,new,high,"4 records of 7 bytes: type byte (1 read here), device word, pad dword (SetupControllers, ReadControllerPads)",obj4/obj4_bss.asm
+001515D0,keybindings,dword_1515D0,new,high,"pointer to keybindtab0 or keybindtab1, set by SetupControllers, read by ReadKeyBinding",obj4/obj4_bss.asm
+00151778,joyrawbits,dword_151778,95PC,medium,"same role as 95PC joyrawbits (sampled joystick bits), here a byte per GrIP slot (bits 0-3 direction, 4-5 buttons)",obj4/obj4_bss.asm
+0015177C,grlinkhdr,unk_15177C,new,medium,14 bytes copied from the start of the GrIP code by GrLink; holds grentry,obj4/obj4_bss.asm
+00151784,grentry,fword_151784,new,high,"far pointer (offset, selector set to grcodesel) GrLink calls with ax 8490h",obj4/obj4_bss.asm
+0015178A,grdossel,word_15178A,new,high,selector of the DPMI 100h DOS block (freed with DPMI 101h),obj4/obj4_bss.asm
+0015178C,grcodesel,word_15178C,new,high,"descriptor from DPMI 0, base/limit/rights set to the DOS block as code",obj4/obj4_bss.asm

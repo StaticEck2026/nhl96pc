@@ -31,7 +31,7 @@ Source style (same as the sibling repos):
 
 ## Current segment
 
-obj1_00000. <- CURRENT
+obj1_01000 (starts at 0x11107). <- CURRENT
 
 ## Sources
 
@@ -59,11 +59,23 @@ obj1_00000. <- CURRENT
   code is labelled they can be generated from the labels (NHL95PC's rebuild_exe.py has the wlink record order).
 - NASM limits: no division or shift of an address from another section in a bin build; `num_pages`-style counts are label differences in
   one section, `last_page_size` stays a number.
+- A fixed-up dword holds the target's offset in its object, not its linear address: write `label-obj4_base` (or `-obj1_base`).
+  `python3 tools/le_fixups.py <segment>` lists a page's fixups (source, target object, target); `--to <segment>` the ones into it.
+- A target inside a still-incbin page: split that page's incbin at the target and put the label there (as `start`), plus an equate
+  in your stub. A target in object 4's BSS (past its last file page): a label in `src/obj4/obj4_bss.asm` (`absolute`, `resb` gaps).
+- NASM swaps base and index in `[ebx+eax+label-base]`; use an equate for `label-base` there (see `dirmaptab_off`). Watcom's
+  imm32 forms the optimiser would shorten (`sub esp,8` as 81h, `and eax,1` as 25h, `cmp ax,8` as 66 3Dh) need `strict dword` /
+  `strict word`.
 
 ## History
 
 - 2026-10-31: bootstrap. 283 incbin segments (3 extender parts, LE header area, 279 object pages), a stub per segment, prebuild
   EXE check, extractor, NASM build and verify (MATCH). Trial: LE header fields and object table as source, `start` entry label.
+- 2026-10-31: obj1_00000 disassembled (0x10000-0x11107; GrLink crosses the page, so obj1_01000 now starts at 0x11107).
+  Watcom trap and ___begtext, the controller code (95PC SetupControllers, ReadKeyboardPad, ReadMousePad, ReadJoyPad,
+  AnyInputPressed; new ReadControllerPads, key bindings, double tap) and the GrIP loader GrLink. Labels it needs were
+  split into the incbin pages they live in; object 4 BSS labels are in `src/obj4/obj4_bss.asm` (`absolute`, no bytes).
+  `tools/le_fixups.py` lists a page's fixups. MATCH.
 
 ## Segment map
 
@@ -73,8 +85,8 @@ obj1_00000. <- CURRENT
 | dos4gw_kernel | incbin | 0x00F474 | 94688 |
 | wstub | incbin | 0x026654 | 10832 |
 | le_header | incbin (header fields and object table are source) | 0x0290A4 | 305072 |
-| obj1_00000 | incbin <- CURRENT | 0x073854 | 4096 |
-| obj1_01000 | incbin | 0x074854 | 4096 |
+| obj1_00000 | asm (0x10000-0x11107: Watcom trap, controllers, GrLink) | 0x073854 | 4359 |
+| obj1_01000 | incbin <- CURRENT | 0x074954 | 3833 |
 | obj1_02000 | incbin | 0x075854 | 4096 |
 | obj1_03000 | incbin | 0x076854 | 4096 |
 | obj1_04000 | incbin | 0x077854 | 4096 |

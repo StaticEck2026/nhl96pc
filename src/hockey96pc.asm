@@ -303,3 +303,4 @@ section obj4 follows=obj3 align=4 vstart=obj4_base
 %include "obj4/obj4_3F000.asm"
 %include "obj4/obj4_40000.asm"
 %include "obj4/obj4_41000.asm"
+%include "obj4/obj4_bss.asm"

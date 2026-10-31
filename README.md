@@ -10,7 +10,8 @@
 
 - Bootstrapped: the EXE is split into the DOS/4GW extender (DOS/16M loader, DOS/4GW kernel, Watcom wstub), the LE header and tables, and the game image's four LE objects, one 4 KB page per segment (283 segments). Each is an `incbin`, and the NASM build is byte-identical to the retail EXE.
 - Every segment also builds on its own from its stub (`src/stubinc/<segment>_stub.asm`).
-- Trial: the LE header fields and object table are source (`src/le/le_header.asm`), with table offsets as label expressions and the entry point (`start`) as a label. Nothing else is disassembled yet.
+- Trial: the LE header fields and object table are source (`src/le/le_header.asm`), with table offsets as label expressions and the entry point (`start`) as a label.
+- Disassembled: obj1_00000 (the Watcom start-of-code trap, the controller code and the GrIP loader). Progress is in SEGMENT_AGENT.md.
 - This is a **disassembly only**: labelled 32-bit x86 assembly that reassembles byte-identical. There is no C decompilation or compiler matching.
 
 **AI agent or new contributor: start with [START_HERE.md](START_HERE.md).**
