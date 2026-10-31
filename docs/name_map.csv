@@ -101,3 +101,54 @@ address,name,auto_name,source,confidence,evidence,file
 00151792,graxis,word_151792,new,high,"ReadGripPads temporary: axis value, then scaled 0-2",obj4/obj4_bss.asm
 00151794,grpadbits,dword_151794,new,high,ReadGripPads temporary: the slot byte being built,obj4/obj4_bss.asm
 00151798,grslot,dword_151798,new,high,ReadGripPads loop slot,obj4/obj4_bss.asm
+0001214A,ShutdownGrip,sub_1214A,new,high,"registered with AtExit by DetectJoysticks: library function 84A2h while grslotcount > 0, then GrUnlink",obj1/obj1_02000.asm
+0001218A,DetectJoysticks,sub_1218A,new,high,"first time only (joy1calib and joy2calib): AtExit(ShutdownGrip), 84A1h slot count -> grslotcount, ScanGripSlots or ReadJoysticks; returns js_flags slot mask",obj1/obj1_02000.asm
+000122A6,LinkOpen,sub_122A6,new,medium,"modem port settings from the game setup, clears the packet rings, sub_183CD opens; linkstate bit 0, exit handler; failure message 129h",obj1/obj1_02000.asm
+0001253E,LinkRecvBlockStart,sub_1253E,new,high,"packet type 3 (LinkRecvPacket table): linkblockptr = linkblockbuf, linkblockleft = packet dword",obj1/obj1_02000.asm
+00012577,LinkRecvBlockData,sub_12577,new,high,"packet type 4: CopyBytes count byte 1 from byte 2, counts linkblocksin when complete",obj1/obj1_02000.asm
+000125FF,LinkSendBlock,sub_125FF,new,high,"type 3 length packet then type 4 packets of up to 4 bytes through LinkSendPacket, retrying until queued",obj1/obj1_02000.asm
+000126E9,LinkRecvBlock,sub_126E9,new,high,"linkblockswant++, waits for linkblocksin, CopyBytes from linkblockbuf",obj1/obj1_02000.asm
+0001272E,LinkRecvSync,sub_1272E,new,high,"packet type 5: byte 5 != linkside -> linkpeersync = dword, else linksameside = 1",obj1/obj1_02000.asm
+0001277B,LinkRecvPacket,sub_1277B,new,high,jump table on packet type 1-6; installed with SetLinkRecvFn by LinkConnect,obj1/obj1_02000.asm
+0001290C,LinkExchangePads,sub_1290C,new,medium,"type 1 packet eax<<11|edx<<1|ebx, waits for linkpadq with 25-tick wait sprite, unpacks the same fields into ecx and two stack pointers",obj1/obj1_02000.asm
+00012A24,LinkConnect,sub_12A24,new,medium,"sub_18540 connect, linkside = linkcaller, LinkSync, linkstate bit 1, linkgame bit 0, setup bytes swapped with LinkSendBlock/LinkRecvBlock; messages 56h-59h, 209h/20Ah, 261h",obj1/obj1_02000.asm
+00012E50,ShowWaitSprite,sub_12E50,new,medium,"once (waitsprite): shape HGwt/HFwt/LGwt by mousewidth, centred, sprite made and shown; LinkExchangePads when late",obj1/obj1_02000.asm
+00012F33,HideWaitSprite,sub_12F33,new,medium,removes and frees waitsprite,obj1/obj1_02000.asm
+00012F77,LinkTimedOut,sub_12F77,new,low,GetTicks > dword_114DA2 -> 1; no callers,obj1/obj1_02000.asm
+00012FB3,LinkSync,sub_12FB3,new,high,"type 5 packet (number, linkside): caller sends then waits for linkpeersync, answerer the reverse; linkpollfn can give up; 0 on linksameside",obj1/obj1_02000.asm
+00017B72,CopyBytes,sub_17B72,new,high,"(eax dest, edx src, ebx count) byte copy loop",obj1/obj1_07000.asm
+0001802B,SetLinkPollFn,sub_1802B,new,high,"swaps linkpollfn with eax, returns the old one",obj1/obj1_08000.asm
+0001804B,SetLinkRecvFn,sub_1804B,new,medium,swaps a routine pointer with eax; LinkConnect passes LinkRecvPacket,obj1/obj1_08000.asm
+0001891A,LinkSendPacket,sub_1891A,new,medium,"(packet, length): 0 when it cannot queue it; every link send retries until nonzero",obj1/obj1_08000.asm
+000E04D0,AtExit,sub_E04D0,new,high,"mov eax,[esp+4]; jmp atexit_ (95PC sub_B3454 is the same wrapper)",obj1/obj1_D0000.asm
+00114CE0,linkgame,word_114CE0,new,high,"bit 0 set by LinkConnect when connected; SetupControllers then makes two controllers type 2, FlushControllerInput calls the link flush",obj4/obj4_04000.asm
+00114CE4,linkside,word_114CE4,new,high,"LinkConnect: 1 when linkcaller, else 0; sent in sync packets, picks which controllers are remote",obj4/obj4_04000.asm
+00114D1A,linkcaller,dword_114D1A,new,medium,LinkOpen eax; LinkConnect messages 56h/57h and linkside by it,obj4/obj4_04000.asm
+00114D96,linkstate,dword_114D96,new,high,"bit 0 set by LinkOpen, bit 1 by LinkConnect; LinkExchangePads needs bit 1",obj4/obj4_04000.asm
+00114D9E,linkpeersync,dword_114D9E,new,high,LinkRecvSync from the other side; LinkSync waits for it,obj4/obj4_04000.asm
+00114DA6,linksyncid,dword_114DA6,new,high,"incremented before every LinkSync call, cleared with the rings",obj4/obj4_04000.asm
+00114DAE,linkblocksin,dword_114DAE,new,high,LinkRecvBlockData counts finished blocks,obj4/obj4_04000.asm
+00114DB2,linkblockswant,dword_114DB2,new,high,LinkRecvBlock increments it and waits for linkblocksin,obj4/obj4_04000.asm
+00114DB6,linkblockleft,dword_114DB6,new,high,bytes of the block left,obj4/obj4_04000.asm
+00114DBA,linkblockptr,dword_114DBA,new,high,"write pointer into linkblockbuf, 0 when no block",obj4/obj4_04000.asm
+00114DBE,linksameside,word_114DBE,new,medium,"set by LinkRecvSync for a sync with our own side; LinkSync gives up, LinkConnect message 261h",obj4/obj4_04000.asm
+0011000C,str_HGwt,unk_11000C,new,high,"""HGwt"", a shape name for sub_E04E0",obj4/obj4_00000.asm
+00110011,str_HFwt,unk_110011,new,high,"""HFwt""",obj4/obj4_00000.asm
+00110016,str_LGwt,unk_110016,new,high,"""LGwt""",obj4/obj4_00000.asm
+0015179C,linkblockbuf,unk_15179C,new,high,LinkRecvBlockStart / LinkSendBlock buffer,obj4/obj4_bss.asm
+001519C0,linkq6,unk_1519C0,new,medium,"ring of 10 x 6 bytes, type 6 packets; head linkq6head, tail linkq6tail",obj4/obj4_bss.asm
+00151A04,linkpadq,unk_151A04,new,high,"ring of 10 x 6 bytes, type 1 packets, read by LinkExchangePads",obj4/obj4_bss.asm
+00151A94,linkq2,unk_151A94,new,medium,"ring of 10 x 6 bytes, type 2 and 6 packets",obj4/obj4_bss.asm
+00151AD0,waitsprite,dword_151AD0,new,high,ShowWaitSprite / HideWaitSprite,obj4/obj4_bss.asm
+00151AD4,linkhdrpkt,unk_151AD4,new,high,LinkSendBlock type 3 packet,obj4/obj4_bss.asm
+00151ADA,linkdatapkt,unk_151ADA,new,high,LinkSendBlock type 4 packet,obj4/obj4_bss.asm
+0015291C,linkpollfn,dword_15291C,new,high,SetLinkPollFn; called by LinkSync while waiting,obj4/obj4_bss.asm
+00151A40,linkq6head,dword_151A40,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A84,linkq6tail,dword_151A84,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A80,linkpadqhead,dword_151A80,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A8C,linkpadqtail,dword_151A8C,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A88,linkq2head,dword_151A88,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A90,linkq2tail,dword_151A90,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+001519B4,linkpkt5,dword_1519B4,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+001519B8,linkpkt3,dword_1519B8,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+001519BC,linkpkt4,dword_1519BC,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm

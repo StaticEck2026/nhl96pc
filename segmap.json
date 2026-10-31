@@ -46,13 +46,13 @@
   {
    "name": "obj1_02000",
    "off": 481694,
-   "size": 3766,
+   "size": 4092,
    "file": "obj1/obj1_02000.asm"
   },
   {
    "name": "obj1_03000",
-   "off": 485460,
-   "size": 4096,
+   "off": 485786,
+   "size": 3770,
    "file": "obj1/obj1_03000.asm"
   },
   {

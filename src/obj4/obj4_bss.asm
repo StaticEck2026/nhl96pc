@@ -57,10 +57,71 @@ grpadbits:							; ReadGripPads: the slot's pad byte being built
 	resd	1
 grslot:								; ReadGripPads: the slot being read
 	resd	1
-	resb	0x2B204
-dword_17C9A0:						; pointer to the game setup: controller devices and teams
+linkblockbuf:						; modem game: the block being sent or received
+	resb	0x218
+linkpkt5:							; LinkRecvSync: the packet
 	resd	1
-	resb	0x7D
+linkpkt3:							; LinkRecvBlockStart: the packet
+	resd	1
+linkpkt4:							; LinkRecvBlockData: the packet
+	resd	1
+linkq6:								; ring of ten 6-byte packets of type 6
+	resb	10 * 6
+dword_1519FC:						; cleared with the link queues
+	resd	1
+dword_151A00:						; cleared with the link queues
+	resd	1
+linkpadq:							; ring of ten 6-byte pad packets (type 1) from the other machine
+	resb	10 * 6
+linkq6head:							; linkq6: next entry written
+	resd	1
+byte_151A44:						; a fourth ring of ten 6-byte packets, cleared with the others
+	resb	10 * 6
+linkpadqhead:						; linkpadq: next entry written
+	resd	1
+linkq6tail:							; linkq6: next entry read
+	resd	1
+linkq2head:							; linkq2: next entry written
+	resd	1
+linkpadqtail:						; linkpadq: next entry read
+	resd	1
+linkq2tail:							; linkq2: next entry read
+	resd	1
+linkq2:								; ring of ten 6-byte packets of types 2 and 6
+	resb	10 * 6
+waitsprite:							; the wait sprite while it is shown, else 0
+	resd	1
+linkhdrpkt:							; LinkSendBlock: type 3 packet (the block length)
+	resb	6
+linkdatapkt:						; LinkSendBlock: type 4 packet (length byte, up to 4 bytes)
+	resb	6
+	resb	0xE3C
+linkpollfn:							; routine LinkSync calls while it waits (SetLinkPollFn), or 0
+	resd	1
+	resb	0x2948E
+byte_17BDAE:						; a screen buffer given to the link messages
+	resb	0xBF2
+dword_17C9A0:						; game setup: pointer to the controller devices and teams
+	resd	1
+	resb	4
+dword_17C9A8:						; game setup: bits 7-8 are exchanged when a modem game connects
+	resd	1
+word_17C9AC:						; game setup word (LinkOpen)
+	resw	1
+word_17C9AE:						; game setup word (LinkOpen)
+	resw	1
+word_17C9B0:						; game setup word: nonzero skips LinkOpen's first message
+	resw	1
+	resw	1
+word_17C9B4:						; game setup word (LinkOpen)
+	resw	1
+	resw	1
+byte_17C9B8:						; game setup string (LinkOpen)
+	resb	0x14
+byte_17C9CC:						; game setup string (LinkOpen)
+	resb	0x28
+byte_17C9F4:						; game setup string (LinkOpen)
+	resb	0x2D
 byte_17CA21:						; bit 7 picks keybindtab1 instead of keybindtab0
 	resb	1
 byte_17CA22:						; bit 0 swaps the two mouse buttons
@@ -68,3 +129,8 @@ byte_17CA22:						; bit 0 swaps the two mouse buttons
 	resb	0x3A
 byte_17CA5D:						; bit 5: the mouse area is 640 by 480, else 320 by 200
 	resb	1
+	resb	0x17
+byte_17CA75:						; B9h bytes the calling machine sends when connecting
+	resb	0x7FD
+byte_17D272:						; where those B9h bytes are sent from and received into
+	resb	0xB9

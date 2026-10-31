@@ -1,7 +1,6 @@
 ; Records of the controller code (equates only, no bytes): the four controllers in ctlrecs and the four
 ; joystick slots in joyslots.
-ctl_type	equ	0						; byte: 1 read here, 2 not read here (probably the far side of
-									; a link game), 0 none
+ctl_type	equ	0						; byte: 1 read here, 2 the other machine's (modem game), 0 none
 ctl_device	equ	1					; word: 1 none, 2 mouse, 4/8/10h/20h joystick slot 0-3, 40h keyboard
 ctl_pad		equ	3					; dword: the pad read last
 ctl_size	equ	7					; size of a ctlrecs entry

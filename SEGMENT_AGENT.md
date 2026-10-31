@@ -31,7 +31,7 @@ Source style (same as the sibling repos):
 
 ## Current segment
 
-obj1_02000 (starts at 0x1214A). <- CURRENT
+obj1_03000 (starts at 0x13146). <- CURRENT
 
 ## Sources
 
@@ -83,6 +83,10 @@ obj1_02000 (starts at 0x1214A). <- CURRENT
   the game port sticks (ReadJoyAxes: self-calibrating range) and ReadJoysticks. Record equates moved to `src/inc/input.inc`
   (ctl_, js_); the joystick slot words of obj1_00000 are now joyslots fields. Watcom clib names by byte match with 95PC.
   `tools/le_fixups.py` takes a page's start from segmap.json. MATCH.
+- 2026-10-31: obj1_02000 disassembled (0x1214A-0x13146; LinkSync crosses the page, obj1_03000 now starts at 0x13146).
+  ShutdownGrip, DetectJoysticks and the modem game link (LinkOpen, LinkConnect, LinkSync, LinkExchangePads, block and
+  packet receive with a jump table as `dd .label-obj1_base`). word_114CE0 / word_114CE4 are now linkgame / linkside.
+  Many callees outside the page keep auto names (screens, sprites, the port driver at 0x18000). MATCH.
 
 ## Segment map
 
@@ -94,8 +98,8 @@ obj1_02000 (starts at 0x1214A). <- CURRENT
 | le_header | incbin (header fields and object table are source) | 0x0290A4 | 305072 |
 | obj1_00000 | asm (0x10000-0x11107: Watcom trap, controllers, GrLink) | 0x073854 | 4359 |
 | obj1_01000 | asm (0x11107-0x1214A: GrIP glue, game port sticks, ReadJoysticks) | 0x074954 | 4163 |
-| obj1_02000 | incbin <- CURRENT | 0x07599E | 3766 |
-| obj1_03000 | incbin | 0x076854 | 4096 |
+| obj1_02000 | asm (0x1214A-0x13146: joystick detection, modem game link) | 0x07599E | 4092 |
+| obj1_03000 | incbin <- CURRENT | 0x07699A | 3770 |
 | obj1_04000 | incbin | 0x077854 | 4096 |
 | obj1_05000 | incbin | 0x078854 | 4096 |
 | obj1_06000 | incbin | 0x079854 | 4096 |

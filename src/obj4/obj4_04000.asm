@@ -52,9 +52,53 @@ grslotmask:							; bit n: GrIP slot n+1 has buttons and two axes
 	incbin	"Extracted/segments/obj4_04000.bin", 0xCD7, 0x4
 grpadbuf:							; word, 0 or 1: the grpads dword written last
 	incbin	"Extracted/segments/obj4_04000.bin", 0xCDB, 0x5
-word_114CE0:						; bit 0: two controllers are not read here (probably a link game)
+linkgame:							; bit 0: a modem game is connected (LinkConnect)
 	incbin	"Extracted/segments/obj4_04000.bin", 0xCE0, 0x4
-word_114CE4:						; 1: controllers 2 and 3 are the ones not read here, else 0 and 1
-	incbin	"Extracted/segments/obj4_04000.bin", 0xCE4, 0x224
+linkside:							; modem game: 1 on the calling machine, 0 on the answering one
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCE4, 0x2
+byte_114CE6:						; LinkOpen: a string from the game setup, given to the port open
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCE6, 0x28
+dword_114D0E:						; LinkOpen: a word from the game setup
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD0E, 0x4
+dword_114D12:						; LinkOpen: 9
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD12, 0x8
+linkcaller:							; nonzero: this machine calls (LinkConnect makes it side 1)
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD1A, 0x4
+dword_114D1E:						; LinkOpen: 1 or 0 by a game setup word
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD1E, 0x18
+dword_114D36:						; LinkOpen: from a word table, by a setup word
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD36, 0x4
+dword_114D3A:						; LinkOpen: a word from the game setup
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD3A, 0xC
+byte_114D46:						; LinkOpen: a string from the setup
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD46, 0x28
+byte_114D6E:						; LinkOpen: another string from the setup
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD6E, 0x28
+linkstate:							; bit 0: the port is open (LinkOpen), bit 1: connected (LinkConnect)
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD96, 0x4
+dword_114D9A:						; cleared with the link queues
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD9A, 0x4
+linkpeersync:						; the last sync number from the other machine
+	incbin	"Extracted/segments/obj4_04000.bin", 0xD9E, 0x4
+dword_114DA2:						; LinkTimedOut: the tick it compares with
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDA2, 0x4
+linksyncid:							; the last sync number sent
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDA6, 0x8
+linkblocksin:						; blocks received
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDAE, 0x4
+linkblockswant:						; blocks asked for (LinkRecvBlock)
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDB2, 0x4
+linkblockleft:						; bytes of the block still to come or go
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDB6, 0x4
+linkblockptr:						; where the next block bytes go
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDBA, 0x4
+linksameside:						; word: 1 when a sync came from our own side (both machines on one side)
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDBE, 0x2
+word_114DC0:						; word cleared before each packet is sent or taken
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDC0, 0x2
+word_114DC2:						; word table, indexed by a setup word
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDC2, 0x8
+dword_114DCA:						; four bytes the two machines exchange after connecting
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDCA, 0x13E
 dword_114F08:						; kept by FlushControllerInput, cleared by SetupControllers
 	incbin	"Extracted/segments/obj4_04000.bin", 0xF08

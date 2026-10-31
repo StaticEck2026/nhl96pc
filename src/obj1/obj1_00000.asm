@@ -820,7 +820,7 @@ SetupControllers:					; fills ctlrecs
 	rep	stosb
 	xor	ebx,ebx						; ebx the controller
 	xor	edx,edx						; edx its record
-	mov	di,[word_114CE0-obj4_base]	; bit 0: two controllers not read here
+	mov	di,[linkgame-obj4_base]	; bit 0: a modem game
 	mov	esi,[dword_17C9A0-obj4_base]	; esi the game setup
 	xor	eax,eax						; eax the controller * 2
 	and	edi,1
@@ -830,9 +830,9 @@ SetupControllers:					; fills ctlrecs
 	mov	[edx+ctlrecs+ctl_device-obj4_base],cx
 	movsx	ecx,di
 	mov	byte [edx+ctlrecs+ctl_type-obj4_base],1	; a player at this machine
-	test	ecx,ecx					; two not read here?
+	test	ecx,ecx					; modem game?
 	jz	.team
-	movsx	ecx,word [word_114CE4-obj4_base]	; which two
+	movsx	ecx,word [linkside-obj4_base]	; which two
 	cmp	ecx,1
 	jnz	.2
 	mov	byte [ctlrecs+2*ctl_size+ctl_type-obj4_base],2	; controllers 2 and 3
@@ -1061,8 +1061,7 @@ ReadControllerPads:					; reads every pad
 	pop	ebx
 	ret
 
-; Clears the pads in ctlrecs and the input queue. When two controllers are not read here, another
-; routine clears the queue instead.
+; Clears the pads in ctlrecs and the input queue. In a modem game another routine clears the queue.
 FlushControllerInput:				; clears pads and queue
 	push	ecx
 	push	edx
@@ -1077,7 +1076,7 @@ FlushControllerInput:				; clears pads and queue
 	mov	dword [eax+ctlrecs+ctl_pad-ctl_size-obj4_base],0	; its pad
 	cmp	eax,ctl_count*ctl_size		; past the last record?
 	jnz	.loop
-	mov	ax,[word_114CE0-obj4_base]	; two not read here?
+	mov	ax,[linkgame-obj4_base]	; modem game?
 	xor	ah,ah
 	and	al,1
 	cwde

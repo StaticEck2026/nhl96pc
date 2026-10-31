@@ -33,8 +33,8 @@ keybindtab0	equ	0x114BA8
 keybindtab1	equ	0x114C00
 dirmaptab	equ	0x114C58
 grlinked	equ	0x114CCF
-word_114CE0	equ	0x114CE0
-word_114CE4	equ	0x114CE4
+linkgame	equ	0x114CE0
+linkside	equ	0x114CE4
 dword_114F08	equ	0x114F08
 cont1team	equ	0x1178D2
 dword_11D91F	equ	0x11D91F
