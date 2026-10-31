@@ -2,8 +2,8 @@
 ; connecting and agreeing on sides, sending and receiving 6-byte packets, blocks of data and sync numbers, and
 ; swapping the pads of both machines every frame. The wait sprite shows while the other machine is late.
 ;
-; A packet: byte 0 the type (1 pads, 2, 3 block start, 4 block data, 5 sync, 6), bytes 1-4 a dword, byte 5 the
-; sender's side. LinkRecvPacket sorts what arrives: pads into linkpadq, types 2 and 6 into their rings.
+; A packet: byte 0 the type (1 pads, 2 controller pads, 3 block start, 4 block data, 5 sync, 6 chat), bytes
+; 1-4 a dword, byte 5 the sender's side. LinkRecvPacket sorts what arrives into rings, blocks and syncs.
 
 ; Shuts the GrIP library down at exit: library function 84A2h while it has slots, then GrUnlink.
 ShutdownGrip:						; registered by DetectJoysticks
@@ -176,11 +176,11 @@ LinkOpen:							; eax caller, edx poll; eax 1 or 0
 	mov	[linkcaller-obj4_base],eax
 	mov	ecx,0x3C					; clear the four packet rings
 	xor	eax,eax
-	mov	edi,linkq2-obj4_base
+	mov	edi,linkctlq-obj4_base
 	rep	stosb
-	mov	dword [linkq2head-obj4_base],0
-	mov	eax,[linkq2head-obj4_base]
-	mov	[linkq2tail-obj4_base],eax
+	mov	dword [linkctlqhead-obj4_base],0
+	mov	eax,[linkctlqhead-obj4_base]
+	mov	[linkctlqtail-obj4_base],eax
 	mov	ecx,0x3C
 	xor	eax,eax
 	mov	edi,linkpadq-obj4_base
@@ -190,20 +190,20 @@ LinkOpen:							; eax caller, edx poll; eax 1 or 0
 	mov	[linkpadqtail-obj4_base],eax
 	mov	ecx,0x3C
 	xor	eax,eax
-	mov	edi,byte_151A44-obj4_base
+	mov	edi,linkmyctlq-obj4_base
 	rep	stosb
-	mov	dword [dword_114D9A-obj4_base],0
-	mov	eax,[dword_114D9A-obj4_base]
-	mov	[dword_1519FC-obj4_base],eax
-	mov	eax,[dword_1519FC-obj4_base]
-	mov	[dword_151A00-obj4_base],eax
+	mov	dword [linkmyctlqcount-obj4_base],0
+	mov	eax,[linkmyctlqcount-obj4_base]
+	mov	[linkmyctlqhead-obj4_base],eax
+	mov	eax,[linkmyctlqhead-obj4_base]
+	mov	[linkmyctlqtail-obj4_base],eax
 	mov	ecx,0x3C
 	xor	eax,eax
-	mov	edi,linkq6-obj4_base
+	mov	edi,linkchatq-obj4_base
 	rep	stosb
-	mov	dword [linkq6head-obj4_base],0
-	mov	eax,[linkq6head-obj4_base]
-	mov	[linkq6tail-obj4_base],eax
+	mov	dword [linkchatqhead-obj4_base],0
+	mov	eax,[linkchatqhead-obj4_base]
+	mov	[linkchatqtail-obj4_base],eax
 	mov	dword [linksyncid-obj4_base],0	; no sync, no blocks
 	mov	dword [linkblocksin-obj4_base],0
 	mov	dword [linkblockswant-obj4_base],0
@@ -494,11 +494,11 @@ LinkRecvPacket:						; eax packet
 	jmp	.1
 .table:								; by type: 1-6
 	dd	.type1-obj1_base			; 1: pads
-	dd	.type2-obj1_base			; 2
+	dd	.type2-obj1_base			; 2: controller pads
 	dd	.type3-obj1_base			; 3: block start
 	dd	.type4-obj1_base			; 4: block data
 	dd	.type5-obj1_base			; 5: sync number
-	dd	.type6-obj1_base			; 6
+	dd	.type6-obj1_base			; 6: chat
 .1:									; the type
 	mov	word [word_114DC0-obj4_base],0
 	mov	eax,[ebp-4]
@@ -511,54 +511,54 @@ LinkRecvPacket:						; eax packet
 	mov	al,[ebp-8]
 	shl	eax,2
 	jmp	[cs:eax+.table-obj1_base]	; by type
-.type6:								; type 6
-	mov	ebx,6						; type 6: into linkq6
+.type6:								; type 6: chat characters
+	mov	ebx,6						; type 6: into linkchatq
 	mov	edx,[ebp-4]
-	imul	eax,[linkq6head-obj4_base],6
-	mov	ecx,linkq6-obj4_base
+	imul	eax,[linkchatqhead-obj4_base],6
+	mov	ecx,linkchatq-obj4_base
 	add	eax,ecx
 	call	CopyBytes
-	mov	edx,[linkq6head-obj4_base]	; next entry, mod 10
+	mov	edx,[linkchatqhead-obj4_base]	; next entry, mod 10
 	inc	edx
 	mov	ebx,0xA
 	mov	eax,edx
 	sar	edx,0x1F
 	idiv	ebx
-	mov	[linkq6head-obj4_base],edx
-	mov	eax,[linkq6head-obj4_base]	; full: drop the oldest
-	cmp	eax,[linkq6tail-obj4_base]
+	mov	[linkchatqhead-obj4_base],edx
+	mov	eax,[linkchatqhead-obj4_base]	; full: drop the oldest
+	cmp	eax,[linkchatqtail-obj4_base]
 	jnz	.type2
-	mov	edx,[linkq6tail-obj4_base]
+	mov	edx,[linkchatqtail-obj4_base]
 	inc	edx
 	mov	ebx,0xA
 	mov	eax,edx
 	sar	edx,0x1F
 	idiv	ebx
-	mov	[linkq6tail-obj4_base],edx
-.type2:								; type 2, and type 6 after linkq6
-	mov	ebx,6						; type 2 (and 6): into linkq2
+	mov	[linkchatqtail-obj4_base],edx
+.type2:								; type 2: controller pads (type 6 falls through to here too)
+	mov	ebx,6						; type 2 (and 6): into linkctlq
 	mov	edx,[ebp-4]
-	imul	eax,[linkq2head-obj4_base],6
-	mov	ecx,linkq2-obj4_base
+	imul	eax,[linkctlqhead-obj4_base],6
+	mov	ecx,linkctlq-obj4_base
 	add	eax,ecx
 	call	CopyBytes
-	mov	edx,[linkq2head-obj4_base]
+	mov	edx,[linkctlqhead-obj4_base]
 	inc	edx
 	mov	ebx,0xA
 	mov	eax,edx
 	sar	edx,0x1F
 	idiv	ebx
-	mov	[linkq2head-obj4_base],edx
-	mov	eax,[linkq2head-obj4_base]
-	cmp	eax,[linkq2tail-obj4_base]
+	mov	[linkctlqhead-obj4_base],edx
+	mov	eax,[linkctlqhead-obj4_base]
+	cmp	eax,[linkctlqtail-obj4_base]
 	jnz	.2
-	mov	edx,[linkq2tail-obj4_base]
+	mov	edx,[linkctlqtail-obj4_base]
 	inc	edx
 	mov	ebx,0xA
 	mov	eax,edx
 	sar	edx,0x1F
 	idiv	ebx
-	mov	[linkq2tail-obj4_base],edx
+	mov	[linkctlqtail-obj4_base],edx
 .2:									; type 2 done
 	jmp	near .exit
 .type1:								; type 1: pads
@@ -749,11 +749,11 @@ LinkConnect:						; eax poll routine; returns eax 1 or 0
 	mov	dword [linksyncid-obj4_base],0	; clear the sync number and the rings
 	mov	ecx,0x3C
 	xor	eax,eax
-	mov	edi,linkq2-obj4_base
+	mov	edi,linkctlq-obj4_base
 	rep	stosb
-	mov	dword [linkq2head-obj4_base],0
-	mov	eax,[linkq2head-obj4_base]
-	mov	[linkq2tail-obj4_base],eax
+	mov	dword [linkctlqhead-obj4_base],0
+	mov	eax,[linkctlqhead-obj4_base]
+	mov	[linkctlqtail-obj4_base],eax
 	mov	ecx,0x3C
 	xor	eax,eax
 	mov	edi,linkpadq-obj4_base
@@ -763,20 +763,20 @@ LinkConnect:						; eax poll routine; returns eax 1 or 0
 	mov	[linkpadqtail-obj4_base],eax
 	mov	ecx,0x3C
 	xor	eax,eax
-	mov	edi,byte_151A44-obj4_base
+	mov	edi,linkmyctlq-obj4_base
 	rep	stosb
-	mov	dword [dword_114D9A-obj4_base],0
-	mov	eax,[dword_114D9A-obj4_base]
-	mov	[dword_1519FC-obj4_base],eax
-	mov	eax,[dword_1519FC-obj4_base]
-	mov	[dword_151A00-obj4_base],eax
+	mov	dword [linkmyctlqcount-obj4_base],0
+	mov	eax,[linkmyctlqcount-obj4_base]
+	mov	[linkmyctlqhead-obj4_base],eax
+	mov	eax,[linkmyctlqhead-obj4_base]
+	mov	[linkmyctlqtail-obj4_base],eax
 	mov	ecx,0x3C
 	xor	eax,eax
-	mov	edi,linkq6-obj4_base
+	mov	edi,linkchatq-obj4_base
 	rep	stosb
-	mov	dword [linkq6head-obj4_base],0
-	mov	eax,[linkq6head-obj4_base]
-	mov	[linkq6tail-obj4_base],eax
+	mov	dword [linkchatqhead-obj4_base],0
+	mov	eax,[linkchatqhead-obj4_base]
+	mov	[linkchatqtail-obj4_base],eax
 	mov	dword [linkblocksin-obj4_base],0	; no blocks
 	mov	dword [linkblockswant-obj4_base],0
 	mov	dword [linkblockleft-obj4_base],0
@@ -1070,7 +1070,8 @@ HideWaitSprite:						; if shown
 	pop	ebx
 	ret
 
-; Returns 1 once the tick count is past dword_114DA2's tick, else 0. Not called.
+; Returns 1 once the tick count is past linkdeadline, else 0: the poll routine LinkSyncWait and
+; LinkSyncMessage give LinkSync.
 LinkTimedOut:						; returns eax 1 or 0
 	push	ebx
 	push	ecx
@@ -1082,7 +1083,7 @@ LinkTimedOut:						; returns eax 1 or 0
 	sub	esp,strict dword 4
 	call	sub_69A9B
 	call	GetTicks				; past the tick?
-	cmp	eax,[dword_114DA2-obj4_base]
+	cmp	eax,[linkdeadline-obj4_base]
 	jng	.1
 	mov	dword [ebp-4],1
 	jmp	.exit

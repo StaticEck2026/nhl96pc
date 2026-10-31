@@ -19,4 +19,6 @@ joy2x:								; joystick 2 x
 joy2y:								; joystick 2 y
 	incbin	"Extracted/segments/obj4_0F000.bin", 0x91C, 0x8
 joyaxes:							; bits 0-3: the joystick axes that answer
-	incbin	"Extracted/segments/obj4_0F000.bin", 0x924
+	incbin	"Extracted/segments/obj4_0F000.bin", 0x924, 0x10B
+byte_11FA2F:						; LinkChat: the line spacing comes from it
+	incbin	"Extracted/segments/obj4_0F000.bin", 0xA2F

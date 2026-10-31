@@ -820,7 +820,7 @@ SetupControllers:					; fills ctlrecs
 	rep	stosb
 	xor	ebx,ebx						; ebx the controller
 	xor	edx,edx						; edx its record
-	mov	di,[linkgame-obj4_base]	; bit 0: a modem game
+	mov	di,[linkgame-obj4_base]		; bit 0: a modem game
 	mov	esi,[dword_17C9A0-obj4_base]	; esi the game setup
 	xor	eax,eax						; eax the controller * 2
 	and	edi,1
@@ -880,12 +880,12 @@ SetupControllers:					; fills ctlrecs
 	xor	eax,eax
 	rep	stosb
 	mov	ecx,0x5A					; the input queue: 90 bytes
-	mov	edi,byte_1515D4-obj4_base
+	mov	edi,inputq-obj4_base
 	xor	eax,eax
 	rep	stosb
-	mov	dword [dword_114BA4-obj4_base],0
+	mov	dword [inputqcount-obj4_base],0
 	mov	dword [dword_114B9C-obj4_base],0
-	mov	dword [dword_114BA0-obj4_base],0
+	mov	dword [inputqhead-obj4_base],0
 	mov	dword [dword_114F08-obj4_base],0
 	jmp	ReadSharedKeys.exit
 
@@ -919,13 +919,13 @@ ReleaseControllers:					; clears ctlrecs
 	call	[mousepollfn-obj4_base]	; read it once
 .queue:								; the input queue
 	mov	ecx,0x5A					; the input queue: 90 bytes
-	mov	edi,byte_1515D4-obj4_base
+	mov	edi,inputq-obj4_base
 	xor	eax,eax
 	mov	dword [dword_114F08-obj4_base],0
 	rep	stosb
-	mov	dword [dword_114BA4-obj4_base],0
+	mov	dword [inputqcount-obj4_base],0
 	mov	dword [dword_114B9C-obj4_base],0
-	mov	dword [dword_114BA0-obj4_base],0
+	mov	dword [inputqhead-obj4_base],0
 	pop	edi
 	pop	edx
 	pop	ecx
@@ -1076,26 +1076,26 @@ FlushControllerInput:				; clears pads and queue
 	mov	dword [eax+ctlrecs+ctl_pad-ctl_size-obj4_base],0	; its pad
 	cmp	eax,ctl_count*ctl_size		; past the last record?
 	jnz	.loop
-	mov	ax,[linkgame-obj4_base]	; modem game?
+	mov	ax,[linkgame-obj4_base]		; modem game?
 	xor	ah,ah
 	and	al,1
 	cwde
 	test	eax,eax
 	jz	.local
-	call	sub_13338				; clears the queue its own way
+	call	LinkFlushInput				; clears the queue its own way
 	pop	edi
 	pop	edx
 	pop	ecx
 	ret
 .local:								; all four read here
 	mov	ecx,0x5A					; the input queue: 90 bytes
-	mov	edi,byte_1515D4-obj4_base
+	mov	edi,inputq-obj4_base
 	mov	edx,[dword_114F08-obj4_base]	; kept: saved, and put back below
 	mov	[dword_114F08-obj4_base],eax
 	rep	stosb
-	mov	dword [dword_114BA4-obj4_base],0
+	mov	dword [inputqcount-obj4_base],0
 	mov	dword [dword_114B9C-obj4_base],0
-	mov	dword [dword_114BA0-obj4_base],0
+	mov	dword [inputqhead-obj4_base],0
 	mov	[dword_114F08-obj4_base],edx
 	pop	edi
 	pop	edx

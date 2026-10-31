@@ -11,7 +11,9 @@ fread_:								; (buffer, size, count, FILE)
 _nfree_:							; (block): frees memory
 	incbin	"Extracted/segments/obj1_9A000.bin", 0x493, 0x199
 sub_AA62C:							; (routine on the stack): adds it to an 8-entry exit list
-	incbin	"Extracted/segments/obj1_9A000.bin", 0x62C, 0x35C
+	incbin	"Extracted/segments/obj1_9A000.bin", 0x62C, 0x38
+sub_AA664:							; (routine on the stack): takes it off the exit list
+	incbin	"Extracted/segments/obj1_9A000.bin", 0x664, 0x324
 sub_AA988:							; (sprite on the stack): ShowWaitSprite's first call
 	incbin	"Extracted/segments/obj1_9A000.bin", 0x988, 0x104
 sub_AAA8C:							; (shape on the stack): its second

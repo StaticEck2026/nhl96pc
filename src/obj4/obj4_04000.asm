@@ -24,9 +24,9 @@ byte_114B8C:						; 16 bytes cleared by SetupControllers and FlushControllerInpu
 	incbin	"Extracted/segments/obj4_04000.bin", 0xB8C, 0x10
 dword_114B9C:						; cleared with the input queue
 	incbin	"Extracted/segments/obj4_04000.bin", 0xB9C, 0x4
-dword_114BA0:						; cleared with the input queue
+inputqhead:							; input queue: next entry written (0-4)
 	incbin	"Extracted/segments/obj4_04000.bin", 0xBA0, 0x4
-dword_114BA4:						; cleared with the input queue
+inputqcount:						; input queue: entries in it (up to 5)
 	incbin	"Extracted/segments/obj4_04000.bin", 0xBA4, 0x4
 keybindtab0:						; key bindings: 4 bytes each (Ctrl needed, Alt needed, scan code word)
 	incbin	"Extracted/segments/obj4_04000.bin", 0xBA8, 0x58
@@ -76,14 +76,16 @@ byte_114D6E:						; LinkOpen: another string from the setup
 	incbin	"Extracted/segments/obj4_04000.bin", 0xD6E, 0x28
 linkstate:							; bit 0: the port is open (LinkOpen), bit 1: connected (LinkConnect)
 	incbin	"Extracted/segments/obj4_04000.bin", 0xD96, 0x4
-dword_114D9A:						; cleared with the link queues
+linkmyctlqcount:					; linkmyctlq: entries in it
 	incbin	"Extracted/segments/obj4_04000.bin", 0xD9A, 0x4
 linkpeersync:						; the last sync number from the other machine
 	incbin	"Extracted/segments/obj4_04000.bin", 0xD9E, 0x4
-dword_114DA2:						; LinkTimedOut: the tick it compares with
+linkdeadline:						; LinkSyncWait sets it 6000 ticks ahead; LinkTimedOut compares
 	incbin	"Extracted/segments/obj4_04000.bin", 0xDA2, 0x4
 linksyncid:							; the last sync number sent
-	incbin	"Extracted/segments/obj4_04000.bin", 0xDA6, 0x8
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDA6, 0x4
+linkpadsready:						; 1 when LinkSendPads may run; it clears it while it runs
+	incbin	"Extracted/segments/obj4_04000.bin", 0xDAA, 0x4
 linkblocksin:						; blocks received
 	incbin	"Extracted/segments/obj4_04000.bin", 0xDAE, 0x4
 linkblockswant:						; blocks asked for (LinkRecvBlock)

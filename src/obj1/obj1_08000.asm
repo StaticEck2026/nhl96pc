@@ -1,7 +1,9 @@
 ; Object 1 page 08000: not yet disassembled.
 	incbin	"Extracted/segments/obj1_08000.bin", 0, 0x2B
 SetLinkPollFn:						; (routine): the one LinkSync calls while it waits; returns the old one
-	incbin	"Extracted/segments/obj1_08000.bin", 0x2B, 0x20
+	incbin	"Extracted/segments/obj1_08000.bin", 0x2B, 0x10
+sub_1803B:							; (routine): stores it, returns the old one; LinkClose sets 0
+	incbin	"Extracted/segments/obj1_08000.bin", 0x3B, 0x10
 SetLinkRecvFn:						; (routine): the one each received packet goes to
 	incbin	"Extracted/segments/obj1_08000.bin", 0x4B, 0x1E9
 sub_18234:							; registered at exit by LinkOpen
@@ -9,6 +11,8 @@ sub_18234:							; registered at exit by LinkOpen
 sub_183CD:							; (string): LinkOpen's port open; 0 on failure
 	incbin	"Extracted/segments/obj1_08000.bin", 0x3CD, 0x173
 sub_18540:							; LinkConnect's connection; 0 on failure
-	incbin	"Extracted/segments/obj1_08000.bin", 0x540, 0x3DA
+	incbin	"Extracted/segments/obj1_08000.bin", 0x540, 0x19C
+sub_186DC:							; LinkClose: closes the port
+	incbin	"Extracted/segments/obj1_08000.bin", 0x6DC, 0x23E
 LinkSendPacket:						; (packet, length): queues a packet to send; 0 when the queue is full
 	incbin	"Extracted/segments/obj1_08000.bin", 0x91A

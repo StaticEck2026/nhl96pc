@@ -9,4 +9,12 @@ str_HGwt:							; "HGwt": a shape name
 str_HFwt:							; "HFwt"
 	incbin	"Extracted/segments/obj4_00000.bin", 0x11, 0x5
 str_LGwt:							; "LGwt"
-	incbin	"Extracted/segments/obj4_00000.bin", 0x16
+	incbin	"Extracted/segments/obj4_00000.bin", 0x16, 0x5
+str_ABORT:							; "ABORT!\n"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x1B, 0x8
+str_X:								; "X"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x23, 0x2
+str_SHAD:							; "SHAD"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x25, 0x5
+str_PAL:							; "PAL"
+	incbin	"Extracted/segments/obj4_00000.bin", 0x2A

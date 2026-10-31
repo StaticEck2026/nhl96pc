@@ -31,7 +31,7 @@ Source style (same as the sibling repos):
 
 ## Current segment
 
-obj1_03000 (starts at 0x13146). <- CURRENT
+obj1_04000 (starts at 0x144BD, with data). <- CURRENT
 
 ## Sources
 
@@ -68,6 +68,8 @@ obj1_03000 (starts at 0x13146). <- CURRENT
   `strict word`.
 - Watcom -5r loads a short as `mov r32,[x-2]` then `sar r32,10h`: the fixup target is two bytes before the field, written as
   `field-2` (for example `joyslots+js_cx-2`). Record layouts used by more than one page are equates in `src/inc/`.
+- A forward near jump whose target is within 127 bytes once the jump itself is short must keep `near`: NASM's
+  shortening also pulls the target 4 bytes closer.
 
 ## History
 
@@ -87,6 +89,10 @@ obj1_03000 (starts at 0x13146). <- CURRENT
   ShutdownGrip, DetectJoysticks and the modem game link (LinkOpen, LinkConnect, LinkSync, LinkExchangePads, block and
   packet receive with a jump table as `dd .label-obj1_base`). word_114CE0 / word_114CE4 are now linkgame / linkside.
   Many callees outside the page keep auto names (screens, sprites, the port driver at 0x18000). MATCH.
+- 2026-10-31: obj1_03000 disassembled (0x13146-0x144BD; LinkChat runs to 0x144BD, where a data table of the next module
+  starts, so obj1_04000 now starts there). LinkSyncWait, LinkClose, LinkFlushInput, LinkSendPads (both machines' pads
+  into the input queue) and the chat window. The link rings got their meanings: linkchatq, linkctlq, linkmyctlq; the
+  input queue is inputq. Generator fix: a forward `jcc near` NASM could shorten keeps `near` (the target moves too). MATCH.
 
 ## Segment map
 
@@ -99,8 +105,8 @@ obj1_03000 (starts at 0x13146). <- CURRENT
 | obj1_00000 | asm (0x10000-0x11107: Watcom trap, controllers, GrLink) | 0x073854 | 4359 |
 | obj1_01000 | asm (0x11107-0x1214A: GrIP glue, game port sticks, ReadJoysticks) | 0x074954 | 4163 |
 | obj1_02000 | asm (0x1214A-0x13146: joystick detection, modem game link) | 0x07599E | 4092 |
-| obj1_03000 | incbin <- CURRENT | 0x07699A | 3770 |
-| obj1_04000 | incbin | 0x077854 | 4096 |
+| obj1_03000 | asm (0x13146-0x144BD: link close, pads exchange, LinkChat) | 0x07699A | 4983 |
+| obj1_04000 | incbin <- CURRENT | 0x077D11 | 2883 |
 | obj1_05000 | incbin | 0x078854 | 4096 |
 | obj1_06000 | incbin | 0x079854 | 4096 |
 | obj1_07000 | incbin | 0x07A854 | 4096 |

@@ -15,7 +15,7 @@ ctlrecs:							; the four controllers: type, device and last pad of each (ctl_ f
 	resb	4 * ctl_size
 keybindings:						; the key binding table in use: keybindtab0 or keybindtab1
 	resd	1
-byte_1515D4:						; input queue, cleared by SetupControllers and FlushControllerInput
+inputq:								; input queue: five 18-byte entries, four pad dwords and a word each
 	resb	0x5A
 	resb	2
 grpads:								; GrIP pads, two dwords written in turn (grpadbuf): a byte per slot
@@ -58,36 +58,40 @@ grpadbits:							; ReadGripPads: the slot's pad byte being built
 grslot:								; ReadGripPads: the slot being read
 	resd	1
 linkblockbuf:						; modem game: the block being sent or received
-	resb	0x218
+	resb	0x200
+dword_15199C:						; cleared when LinkChat starts
+	resd	1
+chatbuf:							; LinkChat: ring of 20 typed characters waiting to be sent
+	resb	20
 linkpkt5:							; LinkRecvSync: the packet
 	resd	1
 linkpkt3:							; LinkRecvBlockStart: the packet
 	resd	1
 linkpkt4:							; LinkRecvBlockData: the packet
 	resd	1
-linkq6:								; ring of ten 6-byte packets of type 6
+linkchatq:							; ring of ten 6-byte chat packets (type 6) from the other machine
 	resb	10 * 6
-dword_1519FC:						; cleared with the link queues
+linkmyctlqhead:						; cleared with the link queues
 	resd	1
-dword_151A00:						; cleared with the link queues
+linkmyctlqtail:						; cleared with the link queues
 	resd	1
 linkpadq:							; ring of ten 6-byte pad packets (type 1) from the other machine
 	resb	10 * 6
-linkq6head:							; linkq6: next entry written
+linkchatqhead:						; linkchatq: next entry written
 	resd	1
-byte_151A44:						; a fourth ring of ten 6-byte packets, cleared with the others
+linkmyctlq:							; ring of ten 6-byte packets: our controller pads, sent and waiting
 	resb	10 * 6
 linkpadqhead:						; linkpadq: next entry written
 	resd	1
-linkq6tail:							; linkq6: next entry read
+linkchatqtail:						; linkchatq: next entry read
 	resd	1
-linkq2head:							; linkq2: next entry written
+linkctlqhead:						; linkctlq: next entry written
 	resd	1
 linkpadqtail:						; linkpadq: next entry read
 	resd	1
-linkq2tail:							; linkq2: next entry read
+linkctlqtail:						; linkctlq: next entry read
 	resd	1
-linkq2:								; ring of ten 6-byte packets of types 2 and 6
+linkctlq:							; ring of ten 6-byte packets: the other machine's controller pads (type 2)
 	resb	10 * 6
 waitsprite:							; the wait sprite while it is shown, else 0
 	resd	1
@@ -95,7 +99,11 @@ linkhdrpkt:							; LinkSendBlock: type 3 packet (the block length)
 	resb	6
 linkdatapkt:						; LinkSendBlock: type 4 packet (length byte, up to 4 bytes)
 	resb	6
-	resb	0xE3C
+chathead:							; LinkChat: chatbuf entry written next (word)
+	resw	1
+chattail:							; LinkChat: chatbuf entry sent next (word)
+	resw	1
+	resb	0xE38
 linkpollfn:							; routine LinkSync calls while it waits (SetLinkPollFn), or 0
 	resd	1
 	resb	0x2948E

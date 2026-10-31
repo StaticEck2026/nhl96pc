@@ -114,7 +114,7 @@ address,name,auto_name,source,confidence,evidence,file
 00012A24,LinkConnect,sub_12A24,new,medium,"sub_18540 connect, linkside = linkcaller, LinkSync, linkstate bit 1, linkgame bit 0, setup bytes swapped with LinkSendBlock/LinkRecvBlock; messages 56h-59h, 209h/20Ah, 261h",obj1/obj1_02000.asm
 00012E50,ShowWaitSprite,sub_12E50,new,medium,"once (waitsprite): shape HGwt/HFwt/LGwt by mousewidth, centred, sprite made and shown; LinkExchangePads when late",obj1/obj1_02000.asm
 00012F33,HideWaitSprite,sub_12F33,new,medium,removes and frees waitsprite,obj1/obj1_02000.asm
-00012F77,LinkTimedOut,sub_12F77,new,low,GetTicks > dword_114DA2 -> 1; no callers,obj1/obj1_02000.asm
+00012F77,LinkTimedOut,sub_12F77,new,high,GetTicks > linkdeadline -> 1; the poll routine LinkSyncWait / LinkSyncMessage give LinkSync,obj1/obj1_02000.asm
 00012FB3,LinkSync,sub_12FB3,new,high,"type 5 packet (number, linkside): caller sends then waits for linkpeersync, answerer the reverse; linkpollfn can give up; 0 on linksameside",obj1/obj1_02000.asm
 00017B72,CopyBytes,sub_17B72,new,high,"(eax dest, edx src, ebx count) byte copy loop",obj1/obj1_07000.asm
 0001802B,SetLinkPollFn,sub_1802B,new,high,"swaps linkpollfn with eax, returns the old one",obj1/obj1_08000.asm
@@ -136,19 +136,42 @@ address,name,auto_name,source,confidence,evidence,file
 00110011,str_HFwt,unk_110011,new,high,"""HFwt""",obj4/obj4_00000.asm
 00110016,str_LGwt,unk_110016,new,high,"""LGwt""",obj4/obj4_00000.asm
 0015179C,linkblockbuf,unk_15179C,new,high,LinkRecvBlockStart / LinkSendBlock buffer,obj4/obj4_bss.asm
-001519C0,linkq6,unk_1519C0,new,medium,"ring of 10 x 6 bytes, type 6 packets; head linkq6head, tail linkq6tail",obj4/obj4_bss.asm
+001519C0,linkchatq,unk_1519C0,new,medium,"ring of 10 x 6 bytes, type 6 packets (chat characters, read by LinkChat); head linkchatqhead, tail linkchatqtail",obj4/obj4_bss.asm
 00151A04,linkpadq,unk_151A04,new,high,"ring of 10 x 6 bytes, type 1 packets, read by LinkExchangePads",obj4/obj4_bss.asm
-00151A94,linkq2,unk_151A94,new,medium,"ring of 10 x 6 bytes, type 2 and 6 packets",obj4/obj4_bss.asm
+00151A94,linkctlq,unk_151A94,new,medium,"ring of 10 x 6 bytes, type 2 packets (the other machine's controller pads, LinkSendPads); type 6 falls through into it too",obj4/obj4_bss.asm
 00151AD0,waitsprite,dword_151AD0,new,high,ShowWaitSprite / HideWaitSprite,obj4/obj4_bss.asm
 00151AD4,linkhdrpkt,unk_151AD4,new,high,LinkSendBlock type 3 packet,obj4/obj4_bss.asm
 00151ADA,linkdatapkt,unk_151ADA,new,high,LinkSendBlock type 4 packet,obj4/obj4_bss.asm
 0015291C,linkpollfn,dword_15291C,new,high,SetLinkPollFn; called by LinkSync while waiting,obj4/obj4_bss.asm
-00151A40,linkq6head,dword_151A40,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
-00151A84,linkq6tail,dword_151A84,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A40,linkchatqhead,dword_151A40,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A84,linkchatqtail,dword_151A84,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
 00151A80,linkpadqhead,dword_151A80,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
 00151A8C,linkpadqtail,dword_151A8C,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
-00151A88,linkq2head,dword_151A88,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
-00151A90,linkq2tail,dword_151A90,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A88,linkctlqhead,dword_151A88,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00151A90,linkctlqtail,dword_151A90,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
 001519B4,linkpkt5,dword_1519B4,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
 001519B8,linkpkt3,dword_1519B8,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
 001519BC,linkpkt4,dword_1519BC,new,high,index or saved packet pointer of the ring / receive routine of the same name,obj4/obj4_bss.asm
+00013146,LinkSyncWait,sub_13146,new,high,"linkdeadline = GetTicks()+6000, SetLinkPollFn(LinkTimedOut), LinkSync(++linksyncid, 1), optional wait sprite",obj1/obj1_03000.asm
+000131EC,LinkSyncMessage,sub_131EC,new,high,as LinkSyncWait with sub_1AA62 message eax instead of the sprite,obj1/obj1_03000.asm
+00013288,LinkClose,sub_13288,new,high,"restores setup bits from dword_114DCA, SetLinkRecvFn(0), sub_AA664(sub_18234), sub_186DC; linkgame = linkstate = 0",obj1/obj1_03000.asm
+00013304,LinkHangUp,sub_13304,new,medium,"in a modem game: ShowWaitSprite, LinkClose, HideWaitSprite",obj1/obj1_03000.asm
+00013338,LinkFlushInput,sub_13338,new,high,"connected and not flushed: LinkSyncWait, clear linkctlq / linkmyctlq / inputq, LinkSyncWait; called by FlushControllerInput in a modem game",obj1/obj1_03000.asm
+00013407,LinkSendPads,sub_13407,new,high,"type 2 packet of ctlrecs pads 0-1 (caller) or 2-3 into linkmyctlq and sent; pairs ours and theirs (linkctlq) into an inputq entry, caller pads first",obj1/obj1_03000.asm
+0001377E,LinkChat,sub_1377E,new,medium,"modem game only: window of two halves, typed 20h-7Dh / Enter into chatbuf, sent 4 a type 6 packet every 3 ticks, linkchatq drawn in the other half, Esc on either side ends",obj1/obj1_03000.asm
+00114DA2,linkdeadline,dword_114DA2,new,high,LinkSyncWait / LinkSyncMessage: GetTicks()+6000; LinkTimedOut compares,obj4/obj4_04000.asm
+00114DAA,linkpadsready,dword_114DAA,new,high,LinkSendPads runs only while 1 and clears it while it runs; LinkFlushInput saves and restores it,obj4/obj4_04000.asm
+00114D9A,linkmyctlqcount,dword_114D9A,new,high,LinkSendPads: our type 2 packets sent and not yet paired,obj4/obj4_04000.asm
+00114BA0,inputqhead,dword_114BA0,new,high,LinkSendPads: next inputq entry (mod 5),obj4/obj4_04000.asm
+00114BA4,inputqcount,dword_114BA4,new,high,"LinkSendPads: inputq entries, up to 5",obj4/obj4_04000.asm
+001515D4,inputq,unk_1515D4,new,medium,"five 12h-byte entries (four pad dwords, word 4) filled by LinkSendPads; cleared by SetupControllers and the flushes",obj4/obj4_bss.asm
+001519A0,chatbuf,unk_1519A0,new,high,LinkChat: ring of 20 typed characters (chathead / chattail mod 20),obj4/obj4_bss.asm
+00151AE0,chathead,word_151AE0,new,high,LinkChat: next chatbuf slot written,obj4/obj4_bss.asm
+00151AE2,chattail,word_151AE2,new,high,LinkChat: next chatbuf slot sent,obj4/obj4_bss.asm
+00151A44,linkmyctlq,unk_151A44,new,high,"LinkSendPads: ring of our own type 2 packets, sent and waiting for the other machine's",obj4/obj4_bss.asm
+001519FC,linkmyctlqhead,dword_1519FC,new,high,linkmyctlq next written,obj4/obj4_bss.asm
+00151A00,linkmyctlqtail,dword_151A00,new,high,linkmyctlq next paired,obj4/obj4_bss.asm
+0011001B,str_ABORT,unk_11001B,new,high,"""ABORT!\n""",obj4/obj4_00000.asm
+00110023,str_X,unk_110023,new,high,"""X""",obj4/obj4_00000.asm
+00110025,str_SHAD,unk_110025,new,high,"""SHAD""",obj4/obj4_00000.asm
+0011002A,str_PAL,unk_11002A,new,high,"""PAL""",obj4/obj4_00000.asm

@@ -7,7 +7,7 @@
 ; Outside addresses, read from the retail EXE. Equates only (the full build has the labels).
 ReadJoysticks	equ	0x11A88
 DetectJoysticks	equ	0x1218A
-sub_13338	equ	0x13338
+LinkFlushInput	equ	0x13338
 sub_619E2	equ	0x619E2
 MouseSetPos	equ	0xDF928
 MouseSetRange	equ	0xDF98F
@@ -27,8 +27,8 @@ kbdtapstate	equ	0x114B78
 joytapstate	equ	0x114B7C
 byte_114B8C	equ	0x114B8C
 dword_114B9C	equ	0x114B9C
-dword_114BA0	equ	0x114BA0
-dword_114BA4	equ	0x114BA4
+inputqhead	equ	0x114BA0
+inputqcount	equ	0x114BA4
 keybindtab0	equ	0x114BA8
 keybindtab1	equ	0x114C00
 dirmaptab	equ	0x114C58
@@ -48,7 +48,7 @@ curpad	equ	0x1515A8
 kbdtapdir	equ	0x1515B0
 ctlrecs	equ	0x1515B4
 keybindings	equ	0x1515D0
-byte_1515D4	equ	0x1515D4
+inputq	equ	0x1515D4
 joyslots	equ	0x151708
 joyrawbits	equ	0x151778
 grlinkhdr	equ	0x15177C
