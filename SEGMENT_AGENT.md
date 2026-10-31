@@ -31,7 +31,7 @@ Source style (same as the sibling repos):
 
 ## Current segment
 
-obj1_01000 (starts at 0x11107). <- CURRENT
+obj1_02000 (starts at 0x1214A). <- CURRENT
 
 ## Sources
 
@@ -66,6 +66,8 @@ obj1_01000 (starts at 0x11107). <- CURRENT
 - NASM swaps base and index in `[ebx+eax+label-base]`; use an equate for `label-base` there (see `dirmaptab_off`). Watcom's
   imm32 forms the optimiser would shorten (`sub esp,8` as 81h, `and eax,1` as 25h, `cmp ax,8` as 66 3Dh) need `strict dword` /
   `strict word`.
+- Watcom -5r loads a short as `mov r32,[x-2]` then `sar r32,10h`: the fixup target is two bytes before the field, written as
+  `field-2` (for example `joyslots+js_cx-2`). Record layouts used by more than one page are equates in `src/inc/`.
 
 ## History
 
@@ -76,6 +78,11 @@ obj1_01000 (starts at 0x11107). <- CURRENT
   AnyInputPressed; new ReadControllerPads, key bindings, double tap) and the GrIP loader GrLink. Labels it needs were
   split into the incbin pages they live in; object 4 BSS labels are in `src/obj4/obj4_bss.asm` (`absolute`, no bytes).
   `tools/le_fixups.py` lists a page's fixups. MATCH.
+- 2026-10-31: obj1_01000 disassembled (0x11107-0x1214A; ReadJoysticks crosses into the next page, so obj1_02000 now starts
+  at 0x1214A). GrUnlink, LoadGrip (GRIP.GLL through _searchenv_), ScanGripSlots / ReadGripPads (library function codes),
+  the game port sticks (ReadJoyAxes: self-calibrating range) and ReadJoysticks. Record equates moved to `src/inc/input.inc`
+  (ctl_, js_); the joystick slot words of obj1_00000 are now joyslots fields. Watcom clib names by byte match with 95PC.
+  `tools/le_fixups.py` takes a page's start from segmap.json. MATCH.
 
 ## Segment map
 
@@ -86,8 +93,8 @@ obj1_01000 (starts at 0x11107). <- CURRENT
 | wstub | incbin | 0x026654 | 10832 |
 | le_header | incbin (header fields and object table are source) | 0x0290A4 | 305072 |
 | obj1_00000 | asm (0x10000-0x11107: Watcom trap, controllers, GrLink) | 0x073854 | 4359 |
-| obj1_01000 | incbin <- CURRENT | 0x074954 | 3833 |
-| obj1_02000 | incbin | 0x075854 | 4096 |
+| obj1_01000 | asm (0x11107-0x1214A: GrIP glue, game port sticks, ReadJoysticks) | 0x074954 | 4163 |
+| obj1_02000 | incbin <- CURRENT | 0x07599E | 3766 |
 | obj1_03000 | incbin | 0x076854 | 4096 |
 | obj1_04000 | incbin | 0x077854 | 4096 |
 | obj1_05000 | incbin | 0x078854 | 4096 |

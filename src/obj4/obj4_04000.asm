@@ -33,9 +33,25 @@ keybindtab0:						; key bindings: 4 bytes each (Ctrl needed, Alt needed, scan co
 keybindtab1:						; the other key binding table
 	incbin	"Extracted/segments/obj4_04000.bin", 0xC00, 0x58
 dirmaptab:							; pad direction map: rows of 11 directions, the row picked by a value 0-7
-	incbin	"Extracted/segments/obj4_04000.bin", 0xC58, 0x77
+	incbin	"Extracted/segments/obj4_04000.bin", 0xC58, 0x58
+joy1calib:							; 1: take joystick 1's centre and range from its next sample
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCB0, 0x4
+joy2calib:							; the same for joystick 2
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCB4, 0x4
+str_GRIPGLL:						; "GRIP.GLL"
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCB8, 0x9
+str_GRIP:							; "GRIP"
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCC1, 0x5
+str_CGRIP:							; "C:\GRIP\"
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCC6, 0x9
 grlinked:							; 1 while the GrIP library is linked (GrLink)
-	incbin	"Extracted/segments/obj4_04000.bin", 0xCCF, 0x11
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCCF, 0x4
+grslotcount:						; GrIP slots found; -1 until the library is loaded
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCD3, 0x4
+grslotmask:							; bit n: GrIP slot n+1 has buttons and two axes
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCD7, 0x4
+grpadbuf:							; word, 0 or 1: the grpads dword written last
+	incbin	"Extracted/segments/obj4_04000.bin", 0xCDB, 0x5
 word_114CE0:						; bit 0: two controllers are not read here (probably a link game)
 	incbin	"Extracted/segments/obj4_04000.bin", 0xCE0, 0x4
 word_114CE4:						; 1: controllers 2 and 3 are the ones not read here, else 0 and 1

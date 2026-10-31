@@ -54,3 +54,50 @@ address,name,auto_name,source,confidence,evidence,file
 00151784,grentry,fword_151784,new,high,"far pointer (offset, selector set to grcodesel) GrLink calls with ax 8490h",obj4/obj4_bss.asm
 0015178A,grdossel,word_15178A,new,high,selector of the DPMI 100h DOS block (freed with DPMI 101h),obj4/obj4_bss.asm
 0015178C,grcodesel,word_15178C,new,high,"descriptor from DPMI 0, base/limit/rights set to the DOS block as code",obj4/obj4_bss.asm
+00011107,GrUnlink,sub_11107,new,medium,"Gravis GrIP SDK GrUnlink: library function 8491h, DPMI 1 and 101h free the selector and DOS block GrLink made, clears grlinked",obj1/obj1_01000.asm
+0001118B,SetJoyButtonMasks,sub_1118B,new,medium,"eax 4 byte pairs -> joybtnmask1/joybtnmask2 per slot; called once (20922 area, probably the joystick setup screen)",obj1/obj1_01000.asm
+000111ED,GetJoyButtonMasks,sub_111ED,new,medium,reverse of SetJoyButtonMasks,obj1/obj1_01000.asm
+0001124D,LoadGrip,sub_1124D,new,high,"_searchenv_ GRIP.GLL in GRIP then PATH, else C:\GRIP\GRIP.GLL; fopen rb, size <= 8000h, _nmalloc_, fread_, GrLink, grslotcount = 0, _nfree_",obj1/obj1_01000.asm
+00011378,ScanGripSlots,sub_11378,new,medium,"120 x library function 84A0h, 84B0h slot map, per slot 84D0h/84D1h 16-byte strings, 84B1h/84B3h/84B4h buttons and axes; usable slots -> grslotmask, joyslots js_flags",obj1/obj1_01000.asm
+00011589,ReadGripPads,sub_11589,new,high,"per grslotmask slot: 84C1h buttons through joybtnmask1/2 -> bits 4-5, 84C0h axes scaled 0-2 -> bits 0-3, into the grpads dword not written last; flips grpadbuf",obj1/obj1_01000.asm
+00011782,ReadGripJoysticks,sub_11782,new,high,"ReadGripPads, then joyrawbits = grpads[grpadbuf] (0 without pads)",obj1/obj1_01000.asm
+000117C7,ReadJoyAxes,sub_117C7,new,medium,"ReadJoyPort; first sample (joy1calib/joy2calib) sets js_flags, rest position and range; then range min/max, x, y, buttons for slots 0-1",obj1/obj1_01000.asm
+00011A88,ReadJoysticks,sub_11A88,new,high,"GrIP (grslotcount > 0) -> ReadGripJoysticks, else ReadJoyAxes and dead-zone (7Ch) tests -> joyrawbits; returns it",obj1/obj1_01000.asm
+000A9BCC,_searchenv_,sub_A9BCC,WATCOM,high,"Watcom clib _searchenv(name, env var, buffer): getenv, path walk with \ / : checks; called with ""GRIP.GLL"",""GRIP""/""PATH""",obj1/obj1_99000.asm
+000A9CB3,strcpy_,sub_A9CB3,95PC,high,same bytes as 95PC strcpy_,obj1/obj1_99000.asm
+000A9CD2,strcat_,sub_A9CD2,95PC,high,same bytes as 95PC strcat_,obj1/obj1_99000.asm
+000A9EA0,fopen_,sub_A9EA0,95PC,high,same bytes as 95PC fopen_,obj1/obj1_99000.asm
+000A9F78,fseek_,sub_A9F78,95PC,high,same bytes as 95PC fseek_,obj1/obj1_99000.asm
+000AA074,ftell_,sub_AA074,95PC,high,same bytes as 95PC ftell_,obj1/obj1_9A000.asm
+000AA0A4,fclose_,sub_AA0A4,95PC,high,same bytes as 95PC fclose_,obj1/obj1_9A000.asm
+000AA1E6,_nmalloc_,sub_AA1E6,95PC,high,same bytes as 95PC _nmalloc_,obj1/obj1_9A000.asm
+000AA2C9,fread_,sub_AA2C9,WATCOM,high,"Watcom clib fread(buf, size, n, FILE): FILE in ecx, read-mode flag test, size * n; LoadGrip reads GRIP.GLL with it",obj1/obj1_9A000.asm
+000AA493,_nfree_,sub_AA493,95PC,high,same bytes as 95PC _nfree_,obj1/obj1_9A000.asm
+000E0051,ReadJoyPort,sub_E0051,new,high,"times port 201h with the PIT: axis counts into joy1x..joy2y, button nibble, joyaxes; returns al buttons, ah axes",obj1/obj1_D0000.asm
+000E0456,EnableJoysticks,sub_E0456,new,medium,sets the joystick enable byte to 1 and resets four limits; same job as 95PC sub_B33DB (sets joyenablemask),obj1/obj1_D0000.asm
+00110004,str_PATH,unk_110004,new,high,"""PATH""",obj4/obj4_00000.asm
+00110009,str_rb,unk_110009,new,high,"""rb""",obj4/obj4_00000.asm
+00114CB0,joy1calib,dword_114CB0,new,medium,"1 in the EXE; ReadJoyAxes takes stick 1 rest position and range from the next sample, then clears it",obj4/obj4_04000.asm
+00114CB4,joy2calib,dword_114CB4,new,medium,the same for stick 2,obj4/obj4_04000.asm
+00114CB8,str_GRIPGLL,unk_114CB8,new,high,"""GRIP.GLL""",obj4/obj4_04000.asm
+00114CC1,str_GRIP,unk_114CC1,new,high,"""GRIP""",obj4/obj4_04000.asm
+00114CC6,str_CGRIP,unk_114CC6,new,high,"""C:\GRIP\""",obj4/obj4_04000.asm
+00114CD3,grslotcount,dword_114CD3,new,medium,"-1 in the EXE; LoadGrip sets 0 when linked, DetectJoysticks stores library function 84A1h result; ReadJoysticks uses GrIP when > 0",obj4/obj4_04000.asm
+00114CD7,grslotmask,dword_114CD7,new,high,ScanGripSlots sets bit slot-1 for usable slots; ReadGripPads reads only those,obj4/obj4_04000.asm
+00114CDB,grpadbuf,word_114CDB,new,high,0/1: which grpads dword ReadGripPads wrote last (xor 1 each read),obj4/obj4_04000.asm
+0011F910,joy1x,dword_11F910,new,high,ReadJoyPort axis count 0; ReadJoyAxes stick 1 x,obj4/obj4_0F000.asm
+0011F914,joy1y,dword_11F914,new,high,axis count 1; stick 1 y,obj4/obj4_0F000.asm
+0011F918,joy2x,dword_11F918,new,high,axis count 2; stick 2 x,obj4/obj4_0F000.asm
+0011F91C,joy2y,dword_11F91C,new,high,axis count 3; stick 2 y,obj4/obj4_0F000.asm
+0011F924,joyaxes,byte_11F924,new,high,ReadJoyPort: the axes that answered (bits 0-3),obj4/obj4_0F000.asm
+00151630,grpads,unk_151630,new,high,"two dwords, a byte per GrIP slot, written in turn by ReadGripPads",obj4/obj4_bss.asm
+00151638,graxismax,unk_151638,new,medium,"per slot word x, word y: library function 84B4h results, divisor when scaling axes",obj4/obj4_bss.asm
+00151698,joybtnmask1,unk_151698,new,high,per slot: button bits that give pad button 1 (default 1); Set/GetJoyButtonMasks,obj4/obj4_bss.asm
+001516A8,joybtnmask2,unk_1516A8,new,high,per slot: button bits that give pad button 2 (default 2),obj4/obj4_bss.asm
+00151708,joyslots,unk_151708,new,high,"4 records of 18h bytes (js_ fields in inc/input.inc): range, flags, position, rest, buttons; stride from ScanGripSlots imul 18h",obj4/obj4_bss.asm
+00151770,grslotmap,dword_151770,new,medium,"library function 84B0h result, bits 1-4 tested for slots 1-4",obj4/obj4_bss.asm
+00151774,grbuttons,unk_151774,new,medium,"per slot byte: library function 84B3h (class 1) + 1, used as the button count",obj4/obj4_bss.asm
+0015178E,grbtnbits,dword_15178E,new,high,ReadGripPads temporary: packed buttons (84C1h),obj4/obj4_bss.asm
+00151792,graxis,word_151792,new,high,"ReadGripPads temporary: axis value, then scaled 0-2",obj4/obj4_bss.asm
+00151794,grpadbits,dword_151794,new,high,ReadGripPads temporary: the slot byte being built,obj4/obj4_bss.asm
+00151798,grslot,dword_151798,new,high,ReadGripPads loop slot,obj4/obj4_bss.asm

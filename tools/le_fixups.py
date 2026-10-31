@@ -37,10 +37,12 @@ def parse(d):
     return [o[1] for o in objs], fix
 
 def seg_range(name, bases):
-    # objN_XXXXX: object N, offset XXXXX in it
+    # objN_...: object N; its linear address from the segment's file offset past the object's first segment (objN_00000),
+    # since a page that was split at a routine boundary no longer starts where its name says
     s = next((s for s in SEGMAP['segments'] if s['name'] == name), None)
     if not s or not name.startswith('obj'): sys.exit('no object segment ' + name)
-    base = bases[int(name[3]) - 1] + int(name.split('_')[1], 16)
+    first = next(f for f in SEGMAP['segments'] if f['name'] == name[:5] + '00000')
+    base = bases[int(name[3]) - 1] + s['off'] - first['off']
     return base, base + s['size']
 
 if __name__ == '__main__':

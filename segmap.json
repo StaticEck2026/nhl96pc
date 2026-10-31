@@ -40,13 +40,13 @@
   {
    "name": "obj1_01000",
    "off": 477531,
-   "size": 3833,
+   "size": 4163,
    "file": "obj1/obj1_01000.asm"
   },
   {
    "name": "obj1_02000",
-   "off": 481364,
-   "size": 4096,
+   "off": 481694,
+   "size": 3766,
    "file": "obj1/obj1_02000.asm"
   },
   {

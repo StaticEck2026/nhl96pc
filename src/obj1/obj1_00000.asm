@@ -6,13 +6,6 @@
 ; 6-7 the two buttons, bits 10-13 and 18 the home team's extra keys, bits 14-17 and 19 the away team's, bit 20
 ; a double tap of the same direction. The file ends with GrLink, the GrIP library's loader for Gravis pads.
 
-ctl_type	equ	0					; ctlrecs field, byte: 1 read here, 2 not read here (probably
-									; the far side of a link game), 0 none
-ctl_device	equ	1					; ctlrecs field, word: 1 none, 2 mouse, 4/8/10h/20h joystick
-									; slot 0-3, 40h keyboard
-ctl_pad	equ	3						; ctlrecs field, dword: the pad read last
-ctl_size	equ	7					; size of a ctlrecs entry
-ctl_count	equ	4					; number of controllers
 dirmaptab_off	equ	dirmaptab-obj4_base	; dirmaptab as the code stores it; an equate because
 									; NASM swaps base and index for [ebx+eax+label-base]
 
@@ -947,13 +940,13 @@ ReadControllerPads:					; reads every pad
 	push	edx
 	push	esi
 	enter	4,0
-	cmp	word [word_151714-obj4_base],0	; any joystick slot in use?
+	cmp	word [joyslots+js_flags-obj4_base],0	; any joystick slot in use?
 	jnz	.joysticks
-	cmp	word [word_15172C-obj4_base],0
+	cmp	word [joyslots+js_size+js_flags-obj4_base],0
 	jnz	.joysticks
-	cmp	word [word_151744-obj4_base],0
+	cmp	word [joyslots+2*js_size+js_flags-obj4_base],0
 	jnz	.joysticks
-	cmp	word [word_15175C-obj4_base],0
+	cmp	word [joyslots+3*js_size+js_flags-obj4_base],0
 	jz	.keys
 .joysticks:							; a slot is in use
 	call	ReadJoysticks			; sample them
